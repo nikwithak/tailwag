@@ -7,3 +7,6 @@
 [submodule "utils"]
 	path = utils
 	url = ./utils
+[submodule "application"]
+	path = application
+	url = ./application
