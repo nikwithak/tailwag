@@ -10,3 +10,9 @@
 [submodule "application"]
 	path = application
 	url = ./application
+[submodule "web_ui"]
+	path = web_ui
+	url = ./web_ui
+[submodule "gui"]
+	path = gui
+	url = ./gui

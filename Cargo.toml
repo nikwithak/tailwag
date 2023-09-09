@@ -6,11 +6,17 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tailwag_application = { version = "0.1.0", path = "application" }
-tailwag_macros = { version = "0.1.0", path = "macros" }
-tailwag_orm = { version = "0.1.0", path = "orm" }
-tailwag_utils = { version = "0.1.0", path = "utils" }
+tailwag_web_service = { version = "0.1.0", path = "application", optional = true }
+tailwag_macros = { version = "0.1.0", path = "macros", optional = true }
+tailwag_orm = { version = "0.1.0", path = "orm", optional = true }
+tailwag_utils = { version = "0.1.0", path = "utils", optional = true }
+tailwag_deployer = { version = "0.1.0", path = "deployer", optional = true }
 
 [features]
-default = ["macros"]
-macros = []
+default = ["all"]
+all = ["web_service", "macros", "orm", "utils", "deployer"]
+web_service = ["dep:tailwag_web_service"]
+macros = ["dep:tailwag_macros"]
+orm = ["dep:tailwag_orm"]
+utils = ["dep:tailwag_utils"]
+deployer = ["dep:tailwag_deployer"]
