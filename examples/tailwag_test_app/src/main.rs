@@ -8,11 +8,12 @@ use tailwag::{
 };
 
 derive_magic! {
-pub struct Item {
-    id: uuid::Uuid,
-    name: String,
-    description: Option<String>,
-}}
+    pub struct Item {
+        id: uuid::Uuid,
+        name: String,
+        description: Option<String>,
+    }
+}
 
 #[tokio::main]
 async fn main() {
