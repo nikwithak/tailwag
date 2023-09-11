@@ -1,18 +1,25 @@
 use tailwag::{
     macros::derive_magic,
     orm::{
-        data_manager::GetTableDefinition,
-        database_definition::database_definition::DatabaseDefinition,
+        data_definition::database_definition::DatabaseDefinition, data_manager::GetTableDefinition,
     },
     web::application::WebServiceApplication,
 };
 
-derive_magic! {
-    pub struct Item {
-        id: uuid::Uuid,
-        name: String,
-        description: Option<String>,
-    }
+#[derive(
+    serde::Deserialize,
+    serde::Serialize,
+    sqlx::FromRow,
+    Clone,
+    tailwag::macros::Queryable,
+    tailwag::macros::GetTableDefinition,
+    tailwag::macros::Insertable,
+    // tailwag::macros::BuildCrudRoutes,
+)]
+pub struct Item {
+    id: uuid::Uuid,
+    name: String,
+    description: Option<String>,
 }
 
 #[tokio::main]
@@ -22,9 +29,10 @@ async fn main() {
         .table(Item::get_table_definition())
         .into();
 
-    let app: WebServiceApplication = data_model.into();
+    let app: WebServiceApplication = WebServiceApplication::default();
 
     app.run().await;
+    todo!()
 
     // DataModelRestServiceDefinition::default()
     // .with_resource::<Item>("/item")
