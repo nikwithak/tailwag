@@ -2,3 +2,5 @@
 /Cargo.lock
 /crates
 /ts_react_management
+**/tags
+.vscode/
