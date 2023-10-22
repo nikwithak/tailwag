@@ -15,6 +15,7 @@ use tailwag::{
     tailwag::macros::Updateable,
     tailwag::macros::Deleteable,
     tailwag::macros::BuildRoutes,
+    Default,
 )]
 pub struct Brewery {
     id: uuid::Uuid,
