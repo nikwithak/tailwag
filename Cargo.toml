@@ -9,15 +9,31 @@ edition = "2021"
 tailwag_web_service = { version = "0.1.0", path = "crates/application", optional = true }
 tailwag_macros = { version = "0.1.0", path = "crates/macros", optional = true }
 tailwag_orm = { version = "0.1.0", path = "crates/orm", optional = true }
+tailwag_gui_tools = { version = "0.1.0", path = "crates/gui", optional = true }
 tailwag_utils = { version = "0.1.0", path = "crates/utils", optional = true }
 tailwag_deployer = { version = "0.1.0", path = "crates/deployer", optional = true }
 openapi_generator = { version = "0.1.0", path = "crates/openapi_generator", optional = true }
 
+[dev-dependencies]
+async-trait = "0.1.73"
+axum = "0.6.20"
+eframe = "0.23.0"
+serde = { version = "1.0.188", features = ["derive"] }
+sqlx = { version = "0.7.1", features = [
+    "postgres",
+    "uuid",
+    "chrono",
+    "runtime-tokio-rustls",
+] }
+tokio = { version = "1.32.0", features = ["full"] }
+uuid = "1.4.1"
+
 [features]
 default = ["all"]
-all = ["web_service", "macros", "orm", "utils", "deployer"]
+all = ["web_service", "macros", "orm", "utils", "deployer", "gui"]
 web_service = ["dep:tailwag_web_service", "dep:openapi_generator"]
 macros = ["dep:tailwag_macros"]
 orm = ["tailwag_macros?/orm", "tailwag_macros?/default", "dep:tailwag_orm"]
+gui = ["dep:tailwag_gui_tools"]
 utils = ["dep:tailwag_utils"]
 deployer = ["dep:tailwag_deployer"]
