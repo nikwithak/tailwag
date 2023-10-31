@@ -3,7 +3,11 @@ use eframe::{epaint::Vec2, run_native, NativeOptions};
 use sqlx::postgres::PgPoolOptions;
 use std::{borrow::BorrowMut, fmt::Display, str::FromStr};
 use tailwag::gui::widgets::item_manager::{item_edit_page::AsEguiForm, item_manager::ItemManager};
-use tailwag::orm::data_manager::{rest_api::RestApiDataProvider, PostgresDataProvider};
+use tailwag::gui::widgets::selector::ItemSelector;
+use tailwag::gui::widgets::util::WidgetedApp;
+use tailwag::orm::data_manager::{
+    in_memory::InMemoryDataProvider, rest_api::RestApiDataProvider, PostgresDataProvider,
+};
 use tailwag::{
     orm::data_manager::GetTableDefinition,
     web::{application::WebServiceApplication, traits::rest_api::BuildRoutes},
@@ -16,7 +20,6 @@ use uuid::Uuid;
 #[derive(
     Clone, // Needed to be able to create an editable version from an Arc<Brewery> without affecting the saved data.
     Debug,
-    Default,
     serde::Deserialize,                  // Needed for API de/serialization
     serde::Serialize,                    // Needed for API de/serialization
     sqlx::FromRow,                       // Needed for DB connectivity
@@ -38,7 +41,7 @@ pub struct Brewery {
 }
 
 // TODO: Derive macro this.
-// Makes the `id` field accessible without being editable
+// Makes the `id` field accessible without being editable.
 impl tailwag::orm::data_manager::rest_api::Id for Brewery {
     fn id(&self) -> &uuid::Uuid {
         &self.id
@@ -54,10 +57,20 @@ impl Display for Brewery {
         write!(f, "{:?}", &self.name)
     }
 }
+impl Default for Brewery {
+    fn default() -> Self {
+        Self {
+            id: uuid::Uuid::new_v4(),
+            name: "New Brewery".to_string(),
+            description: None,
+            website_url: None,
+            food_truck_extraction_regex: None,
+        }
+    }
+}
 // Alias the DataProvider type. Not necessarily required.
 pub type Breweries = PostgresDataProvider<Brewery>;
 
-///
 #[tokio::main]
 async fn main() {
     let web_svc = tokio::spawn(run_server());
@@ -68,6 +81,9 @@ async fn main() {
 async fn run_gui() {
     let provider =
         RestApiDataProvider::<Brewery>::from_endpoint("http://localhost:3001".to_string());
+    // Uncomment to run without the web service (e.g. if Postgres isn't set up)
+    // let provider = InMemoryDataProvider::<Brewery>::default();
+
     let app = ItemManager::<Brewery>::from_data_provider(provider);
 
     // Standard egui shit
@@ -82,7 +98,7 @@ async fn run_server() {
         .max_connections(1)
         .connect("postgres://postgres:postgres@127.0.0.1:5432/postgres")
         .await
-        .expect("[DATABASE] Unable to obtain connection to database");
+        .expect("[DATABASE] Unable to obtain connection to database. Is postgres running?");
 
     let provider = PostgresDataProvider {
         table_definition: Brewery::get_table_definition(),
