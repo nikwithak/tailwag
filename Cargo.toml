@@ -9,10 +9,13 @@ edition = "2021"
 tailwag_web_service = { version = "0.1.0", path = "crates/application", optional = true }
 tailwag_macros = { version = "0.1.0", path = "crates/macros", optional = true }
 tailwag_orm = { version = "0.1.0", path = "crates/orm", optional = true }
+tailwag_forms = { version = "0.1.0", path = "crates/forms", optional = true }
 tailwag_gui_tools = { version = "0.1.0", path = "crates/gui", optional = true }
 tailwag_utils = { version = "0.1.0", path = "crates/utils", optional = true }
 tailwag_deployer = { version = "0.1.0", path = "crates/deployer", optional = true }
 openapi_generator = { version = "0.1.0", path = "crates/openapi_generator", optional = true }
+syn = { version = "2.0.39", features = ["extra-traits"] }
+serde_json = "1.0.111"
 
 [dev-dependencies]
 async-trait = "0.1.73"
@@ -30,9 +33,10 @@ uuid = "1.4.1"
 
 [features]
 default = ["all"]
-all = ["web_service", "macros", "orm", "utils", "deployer", "gui"]
+all = ["web_service", "macros", "orm", "utils", "deployer", "gui", "forms"]
 web_service = ["dep:tailwag_web_service", "dep:openapi_generator"]
 macros = ["dep:tailwag_macros"]
+forms = ["dep:tailwag_forms"]
 orm = ["tailwag_macros?/orm", "tailwag_macros?/default", "dep:tailwag_orm"]
 gui = ["dep:tailwag_gui_tools"]
 utils = ["dep:tailwag_utils"]

@@ -1,19 +1,18 @@
 use eframe::{epaint::Vec2, run_native, NativeOptions};
 /// This example is a simple application that will
 use sqlx::postgres::PgPoolOptions;
-use std::{borrow::BorrowMut, fmt::Display, str::FromStr};
-use tailwag::gui::widgets::item_manager::{item_edit_page::AsEguiForm, item_manager::ItemManager};
-use tailwag::gui::widgets::selector::ItemSelector;
-use tailwag::gui::widgets::util::WidgetedApp;
-use tailwag::orm::data_manager::{
-    in_memory::InMemoryDataProvider, rest_api::RestApiDataProvider, PostgresDataProvider,
-};
+use std::fmt::Display;
+use std::path::Path;
+use tailwag::forms::GetForm;
+use tailwag::gui::widgets::item_manager::item_manager::ItemManager;
+use tailwag::orm::data_manager::traits::DataProvider;
+use tailwag::orm::data_manager::{rest_api::RestApiDataProvider, PostgresDataProvider};
 use tailwag::{
     orm::data_manager::GetTableDefinition,
     web::{application::WebServiceApplication, traits::rest_api::BuildRoutes},
 };
+use tailwag_gui_tools::widgets::widget_selector::MultiItemManager;
 use tokio;
-use uuid::Uuid;
 
 /// All the derive macros, to add functionality. Eventually I hope to condense these into one single derive macro (for the base case)
 /// where all the other pieces are derived from one.
@@ -23,13 +22,13 @@ use uuid::Uuid;
     serde::Deserialize,                  // Needed for API de/serialization
     serde::Serialize,                    // Needed for API de/serialization
     sqlx::FromRow,                       // Needed for DB connectivity
-    tailwag::macros::Queryable, // TODO: Clean up how these macros work. I think this one is literally just a marker right now.
     tailwag::macros::GetTableDefinition, // Creates the data structure needed for the ORM to work.
     tailwag::macros::Insertable,
     tailwag::macros::Updateable,
     tailwag::macros::Deleteable,
     tailwag::macros::BuildRoutes, // Creates the functions needed for a REST service (full CRUD)
     tailwag::macros::AsEguiForm, // Renders the object into an editable form for an egui application.
+    tailwag::forms::macros::GetForm,
 )]
 pub struct Brewery {
     id: uuid::Uuid, // Immutable, and assigned after create. The macros make assumptions because the name is `id` and the type is Uuid
@@ -57,6 +56,7 @@ impl Display for Brewery {
         write!(f, "{:?}", &self.name)
     }
 }
+
 impl Default for Brewery {
     fn default() -> Self {
         Self {
@@ -73,18 +73,29 @@ pub type Breweries = PostgresDataProvider<Brewery>;
 
 #[tokio::main]
 async fn main() {
+    save_form_def("./out/forms/brewery.json").unwrap();
     let web_svc = tokio::spawn(run_server());
     _ = run_gui().await;
     _ = web_svc.await;
 }
 
+fn save_form_def(filepath: &str) -> Result<(), std::io::Error> {
+    let form_def = serde_json::to_string(&Brewery::get_form())?;
+    let dir = Path::new(filepath).parent().unwrap_or(Path::new(filepath));
+    std::fs::create_dir_all(dir).expect("Failed to create directories.");
+    std::fs::write(filepath, form_def.as_bytes())?;
+    Ok(())
+}
+
 async fn run_gui() {
     let provider =
-        RestApiDataProvider::<Brewery>::from_endpoint("http://localhost:3001".to_string());
+        RestApiDataProvider::<Brewery>::from_endpoint("http://localhost:8081".to_string());
     // Uncomment to run without the web service (e.g. if Postgres isn't set up)
     // let provider = InMemoryDataProvider::<Brewery>::default();
 
-    let app = ItemManager::<Brewery>::from_data_provider(provider);
+    let app = MultiItemManager::default()
+        .add("Breweries", ItemManager::from_data_provider(provider.clone()))
+        .add("Food Trucks", ItemManager::from_data_provider(provider));
 
     // Standard egui shit
     let mut native_options = NativeOptions::default();
@@ -106,8 +117,8 @@ async fn run_server() {
         _t: Default::default(),
     };
 
-    let app: WebServiceApplication =
-        WebServiceApplication::default().add_routes("/item", Brewery::build_routes(provider).await);
+    let app: WebServiceApplication = WebServiceApplication::default()
+        .add_routes("/brewery", Brewery::build_routes(provider).await);
 
-    app.run().await;
+    app.run_app().await;
 }

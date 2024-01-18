@@ -4,3 +4,4 @@
 /ts_react_management
 **/tags
 .vscode/
+out/
