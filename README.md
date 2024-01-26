@@ -25,14 +25,13 @@ $> cargo install tailwag --features all
 $> tailwag new --web-service <project_name>
 
 # To use a custom template (/path/to/template can be local or a github remote)
-$> tailwag new --from-template </path/to/template> <projet_name>
+$> tailwag new --from-template </path/to/template> <project_name>
 
 # To run the application locally in debug mode.
 $> tailwag debug <project_name>
 
 # To deploy the application
 $> tailwag deploy [-c ./tailwag.toml]
-
 
 # Managing multiple applications in a monorepo, OR split across services
 
@@ -115,5 +114,5 @@ of Java (and then some!), but without all the verbosity.
 
 ##### Q: Why not use existing frameworks like `diesel` or `yew` or `<other_library>`?
 
-A: I started these libraries as a learning experience. It has grown over time
-into something more.
+A: I started these libraries as a learning experience, and it has grown over
+time into something more useful than that.

@@ -68,6 +68,7 @@ impl Default for Brewery {
         }
     }
 }
+
 // Alias the DataProvider type. Not necessarily required.
 pub type Breweries = PostgresDataProvider<Brewery>;
 
@@ -107,6 +108,7 @@ async fn run_gui() {
 async fn run_server() {
     let pool = PgPoolOptions::new()
         .max_connections(1)
+        // TODO: Unhardcode things
         .connect("postgres://postgres:postgres@127.0.0.1:5432/postgres")
         .await
         .expect("[DATABASE] Unable to obtain connection to database. Is postgres running?");
