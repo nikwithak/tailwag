@@ -1,0 +1,15 @@
+[submodule "crates/openapi_generator"]
+	path = crates/openapi_generator
+	url = https://github.com/nikwithak/openapi_generator.git
+[submodule "crates/application"]
+	path = crates/application
+	url = https://github.com/nikwithak/tonguetail-web-service.git
+[submodule "crates/forms"]
+	path = crates/forms
+	url = https://github.com/nikwithak/tonguetail_forms.git
+[submodule "crates/gui"]
+	path = crates/gui
+	url = https://github.com/nikwithak/tailwag_gui_tools.git
+[submodule "crates/templater"]
+	path = crates/templater
+	url = https://github.com/nikwithak/tailwag_templater.git
