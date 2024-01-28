@@ -119,7 +119,8 @@ async fn run_server() {
         _t: Default::default(),
     };
 
-    let app: WebServiceApplication = WebServiceApplication::default()
+    let app: WebServiceApplication = WebServiceApplication::new_with_auth("Berewries")
+        .await
         .add_routes("/brewery", Brewery::build_routes(provider).await);
 
     app.run_app().await;

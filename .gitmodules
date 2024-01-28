@@ -13,3 +13,6 @@
 [submodule "crates/templater"]
 	path = crates/templater
 	url = https://github.com/nikwithak/tailwag_templater.git
+[submodule "crates/auth"]
+	path = crates/auth
+	url = https://www.github.com/nikwithak/tonguetail_auth.git
