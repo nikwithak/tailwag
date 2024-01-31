@@ -31,6 +31,7 @@ tailwag_utils = { version = "0.1.0", path = "crates/utils", optional = true }
 tailwag_deployer = { version = "0.1.0", path = "crates/deployer", optional = true }
 openapi_generator = { version = "0.1.0", path = "crates/openapi_generator", optional = true }
 serde_json = "1.0.111"
+tower-http = { version = "0.5.1", features = ["trace", "full"] }
 
 [dev-dependencies]
 async-trait = "0.1.73"

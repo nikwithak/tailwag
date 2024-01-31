@@ -5,45 +5,23 @@ use std::fmt::Display;
 use std::path::Path;
 use tailwag::forms::GetForm;
 use tailwag::gui::widgets::item_manager::item_manager::ItemManager;
-use tailwag::orm::data_manager::traits::DataProvider;
 use tailwag::orm::data_manager::{rest_api::RestApiDataProvider, PostgresDataProvider};
 use tailwag::{
     orm::data_manager::GetTableDefinition,
     web::{application::WebServiceApplication, traits::rest_api::BuildRoutes},
 };
 use tailwag_gui_tools::widgets::widget_selector::MultiItemManager;
+use tailwag_macros::derive_magic;
 use tokio;
 
-/// All the derive macros, to add functionality. Eventually I hope to condense these into one single derive macro (for the base case)
-/// where all the other pieces are derived from one.
-#[derive(
-    Clone, // Needed to be able to create an editable version from an Arc<Brewery> without affecting the saved data.
-    Debug,
-    serde::Deserialize,                  // Needed for API de/serialization
-    serde::Serialize,                    // Needed for API de/serialization
-    sqlx::FromRow,                       // Needed for DB connectivity
-    tailwag::macros::GetTableDefinition, // Creates the data structure needed for the ORM to work.
-    tailwag::macros::Insertable,
-    tailwag::macros::Updateable,
-    tailwag::macros::Deleteable,
-    tailwag::macros::BuildRoutes, // Creates the functions needed for a REST service (full CRUD)
-    tailwag::macros::AsEguiForm, // Renders the object into an editable form for an egui application.
-    tailwag::forms::macros::GetForm,
-)]
-pub struct Brewery {
-    id: uuid::Uuid, // Immutable, and assigned after create. The macros make assumptions because the name is `id` and the type is Uuid
-    name: String,
-    description: Option<String>, // Option<_> tells the ORM to make the DB columns nullable.
-    website_url: Option<String>,
-    food_truck_extraction_regex: Option<String>,
-    // location: Geometry,
-}
-
-// TODO: Derive macro this.
-// Makes the `id` field accessible without being editable.
-impl tailwag::orm::data_manager::rest_api::Id for Brewery {
-    fn id(&self) -> &uuid::Uuid {
-        &self.id
+derive_magic! {
+    pub struct Brewery {
+        id: uuid::Uuid, // Immutable, and assigned after create. The macros make assumptions because the name is `id` and the type is Uuid
+        name: String,
+        description: Option<String>, // Option<_> tells the ORM to make the DB columns nullable.
+        website_url: Option<String>,
+        food_truck_extraction_regex: Option<String>,
+        // location: Geometry,
     }
 }
 
