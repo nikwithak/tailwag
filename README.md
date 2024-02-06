@@ -45,6 +45,17 @@ $> tailwag deploy [-c ./tailwag.toml]
       framework seeks to make it simple and fast to define the core data
       structures needed for an application, and handle the standard
       infrastructure patterns needed to support it.
+- [ ] Focus on Ergonomics - I should be able to manage all aspects of a data
+      type from its definition. Custom overrides of functionality should be
+      simple for customization. Validation, when possible. Rely heavily on
+      derive macros.
+- [ ] Define things in terms of Data. Data Types have a Data Source model and a
+      Data Output model. Sources I want to support:
+  - REST API
+  - User Input (web forms)
+  - Triggers (ASYNC queued task)
+  - Triggers (SYNC webhook)
+- [ ] All data types should have a customizable access policy.
 
 ### Roadmap
 

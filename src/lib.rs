@@ -27,3 +27,5 @@ pub use tailwag_gui_tools as gui;
 /// Various common utilities for coding. Things like string manipulation, common struct patterns, etc.
 #[cfg(feature = "forms")]
 pub use tailwag_forms as forms;
+
+pub mod application_builder;
