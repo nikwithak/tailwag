@@ -1,32 +1,51 @@
-use axum::http::{HeaderMap, HeaderValue};
+use axum::{
+    http::{HeaderMap, HeaderValue},
+    response::IntoResponse,
+    Json,
+};
 use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, NaiveTime};
-use reqwest::{Client, Error};
+use reqwest::{Client, Error, StatusCode};
 use tailwag_macros::derive_magic;
 use tailwag_orm::{
-    data_manager::{rest_api::Id, traits::DataProvider, PostgresDataProvider},
+    data_manager::{
+        rest_api::Id,
+        traits::{DataProvider, WithFilter},
+        PostgresDataProvider,
+    },
     queries::filterable_types::FilterEq,
 };
 
-use crate::{
-    event::Event,
-    food_truck::{self, FoodTruck},
-};
+use crate::{event::Event, food_truck::FoodTruck};
 
-derive_magic! {
-    // #[webhooks(get_truck_events)]
-    pub struct Brewery {
-        id: uuid::Uuid,
-        #[display]
-        name: String,
-        #[no_filter]
-        description: Option<String>,
-        #[no_filter]
-        website_url: Option<String>,
-        #[no_filter]
-        food_truck_extraction_regex: Option<String>,
-    }
+#[derive(
+    Clone,
+    Debug,
+    serde::Deserialize,
+    serde::Serialize,
+    sqlx::FromRow,
+    tailwag::macros::GetTableDefinition,
+    tailwag::macros::Insertable,
+    tailwag::macros::Updateable,
+    tailwag::macros::Deleteable,
+    tailwag::macros::Filterable,
+    tailwag::macros::BuildRoutes,
+    tailwag::macros::Id,
+    tailwag::macros::AsEguiForm,
+    tailwag::macros::Display,
+    tailwag::forms::macros::GetForm,
+)]
+#[actions(temp_webhook)]
+pub struct Brewery {
+    id: uuid::Uuid,
+    #[display]
+    name: String,
+    #[no_filter]
+    description: Option<String>,
+    #[no_filter]
+    website_url: Option<String>,
+    #[no_filter]
+    food_truck_extraction_regex: Option<String>,
 }
-
 impl Default for Brewery {
     fn default() -> Self {
         Self {
@@ -39,16 +58,40 @@ impl Default for Brewery {
     }
 }
 
+pub async fn temp_webhook(
+    axum::extract::State(data_providers): axum::extract::State<
+        tailwag_web_service::application::DataProviders,
+    >,
+    axum::extract::Path(params): axum::extract::Path<std::collections::HashMap<String, String>>,
+) -> impl axum::response::IntoResponse {
+    let (Some(id),) = (
+        // let (Some(id), Some(breweries), Some(events), Some(food_trucks)) = (
+        params.get("id"),
+        // data_providers.get::<Brewery>(),
+        // data_providers.get::<Event>(),
+        // data_providers.get::<FoodTruck>(),
+    ) else {
+        return reqwest::StatusCode::BAD_REQUEST.into_response();
+    };
+
+    // let brewery = breweries.get(id.parse().unwrap()).await.expect("Oops");
+    // if let Some(brewery) = brewery {
+    //     Json(brewery.fetch_events(events, food_trucks).await.unwrap()).into_response()
+    // } else {
+    StatusCode::NOT_FOUND.into_response()
+    // }
+}
+
 impl Brewery {
     // ETL job: Pulls the web page, exetracts the regex, builds the events (and potentially food trucks), and saves them to the DB.
-    async fn get_truck_events(
+    async fn fetch_events(
         &self,
         events: PostgresDataProvider<Event>,
         food_trucks: PostgresDataProvider<FoodTruck>,
-    ) -> Result<Option<Event>, reqwest::Error> {
+    ) -> Result<Vec<Event>, reqwest::Error> {
         let (Some(url), Some(regex_str)) = (&self.website_url, &self.food_truck_extraction_regex)
         else {
-            return Ok(None);
+            return Ok(Vec::new());
         };
 
         fn client() -> Result<Client, Error> {
@@ -84,9 +127,8 @@ impl Brewery {
                         year
                     }
                 })
-                // TODO: This could cause issues towards end of year. Need some fancier logic to really streamline this.
+                // TODO: This will cause issues towards end of year. Need some fancier logic to really streamline this.
                 .unwrap_or(now.year());
-            // let day_of_week = capture.name("day_of_week").map(|s| s.as_str());
             let mut start_time = capture
                 .name("start_time")
                 .and_then(|s| s.as_str().parse::<u32>().ok())
@@ -110,9 +152,6 @@ impl Brewery {
                 continue; // TODO: Refactor to avoid continue control flows
             };
             let truck = match food_trucks
-                .all()
-                .await // TODO: Shouldn't need this .await.unwrap()
-                .unwrap()
                 .with_filter(|c| c.name.eq(food_truck_name))
                 .execute()
                 .await
@@ -131,11 +170,6 @@ impl Brewery {
             };
 
             if events
-                // TODO: all() -> with_filter (directly)
-                // TODO: get() -> filter and assert there's only one
-                .all()
-                .await
-                .unwrap()
                 .with_filter(|e| {
                     e.start_time.eq(event_start_time)
                         & e.food_truck_id.eq(*truck.id())
@@ -155,6 +189,7 @@ impl Brewery {
                 log::info!("Created new event: {}", event);
             }
         }
-        Ok(todo!())
+        Ok(Vec::new())
+        // event
     }
 }
