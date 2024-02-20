@@ -5,8 +5,8 @@ use axum::{
 };
 use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, NaiveTime};
 use reqwest::{Client, Error, StatusCode};
-use tailwag_macros::derive_magic;
 use tailwag_orm::{
+    data_definition::exp_data_system::DataSystem,
     data_manager::{
         rest_api::Id,
         traits::{DataProvider, WithFilter},
@@ -46,6 +46,7 @@ pub struct Brewery {
     #[no_filter]
     food_truck_extraction_regex: Option<String>,
 }
+
 impl Default for Brewery {
     fn default() -> Self {
         Self {
@@ -59,27 +60,32 @@ impl Default for Brewery {
 }
 
 pub async fn temp_webhook(
-    axum::extract::State(data_providers): axum::extract::State<
-        tailwag_web_service::application::DataProviders,
-    >,
-    axum::extract::Path(params): axum::extract::Path<std::collections::HashMap<String, String>>,
-) -> impl axum::response::IntoResponse {
-    let (Some(id),) = (
-        // let (Some(id), Some(breweries), Some(events), Some(food_trucks)) = (
-        params.get("id"),
-        // data_providers.get::<Brewery>(),
-        // data_providers.get::<Event>(),
-        // data_providers.get::<FoodTruck>(),
+    // params: std::collections::HashMap<String, String>
+    id: String,
+    data_providers: DataSystem,
+) -> Option<Vec<Event>> {
+    // let (Some(id),) = (
+    let (Some(id), Some(breweries), Some(events), Some(food_trucks)) = (
+        // params.get("id"),
+        Some(id),
+        data_providers.get::<Brewery>(),
+        data_providers.get::<Event>(),
+        data_providers.get::<FoodTruck>(),
     ) else {
-        return reqwest::StatusCode::BAD_REQUEST.into_response();
+        return None;
+        // return reqwest::StatusCode::BAD_REQUEST.into_response();
     };
 
-    // let brewery = breweries.get(id.parse().unwrap()).await.expect("Oops");
-    // if let Some(brewery) = brewery {
-    //     Json(brewery.fetch_events(events, food_trucks).await.unwrap()).into_response()
-    // } else {
-    StatusCode::NOT_FOUND.into_response()
-    // }
+    let brewery = breweries
+        .get(|filter| filter.id.eq(id.parse::<uuid::Uuid>().unwrap()))
+        .await
+        .expect("Oops");
+    if let Some(brewery) = brewery {
+        // Json(brewery.fetch_events(events, food_trucks).await.unwrap()).into_response()
+        brewery.fetch_events(events, food_trucks).await.ok()
+    } else {
+        None
+    }
 }
 
 impl Brewery {

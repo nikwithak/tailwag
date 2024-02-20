@@ -13,7 +13,7 @@ use tailwag_web_service::application::WebService;
 
 #[tokio::main]
 async fn main() {
-    let svc = WebService::new("Brewery Food Truck Finder")
+    let svc = WebService::builder("Brewery Food Truck Finder")
         .with_resource::<Brewery>()
         .with_resource::<Event>()
         .with_resource::<FoodTruck>()

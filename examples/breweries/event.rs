@@ -21,7 +21,8 @@ impl Default for Event {
             name: "New Brewery".to_string(),
             description: None,
             start_time: chrono::Utc::now().naive_utc(),
-            ..Default::default()
+            food_truck_id: uuid::Uuid::default(),
+            brewery_id: uuid::Uuid::default(),
         }
     }
 }
