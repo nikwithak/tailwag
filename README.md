@@ -1,12 +1,17 @@
 # Tailwag - The Rapid Rust Toolkit
 
 This repo consolidates a variety of Rust libraries intended to rapidly create
-scalable, Production-ready applications. The primary goal of Tailwag is to
-enable same-day zero-to-production development and deployments.
+scalable, Production-ready applications. The end goal of Tailwag is to enable
+same-day zero-to-production development and deployments.
 
 ## Project Status: WIP
 
-This project is being actively developed in my free time.
+This project is being actively developed in my free time. Expect breaking
+changes
+
+## Support and Contributions
+
+This
 
 ### Production Readiness
 
@@ -34,33 +39,34 @@ $> tailwag debug <project_name>
 $> tailwag deploy [-c ./tailwag.toml]
 
 # Managing multiple applications in a monorepo, OR split across services
-
-
-
 ```
 
 ## Tenets [Opinionated Framework]
 
-- [ ] The data structure is the most important piece of an application. This
-      framework seeks to make it simple and fast to define the core data
-      structures needed for an application, and handle the standard
-      infrastructure patterns needed to support it.
-- [ ] Focus on Ergonomics - I should be able to manage all aspects of a data
-      type from its definition. Custom overrides of functionality should be
-      simple for customization. Validation, when possible. Rely heavily on
-      derive macros.
+- [ ] The data model is the most important part of an application, and therefore
+      it's essential to make it consistent and easy to modify. This framework
+      seeks to make it simple and fast to define the core data structures needed
+      for an application, and handle the standard infrastructure patterns needed
+      to support it.
+- [ ] Focus on Ergonomics - Tailwag enables you to define all aspects of a data
+      type from its definition. Custom overrides of functionality should be easy
+      for customization. Validation, when possible. Rely heavily on traits and
+      derive macros. Zero effort for the default case, but easy to override
+      behavior.
 - [ ] Define things in terms of Data. Data Types have a Data Source model and a
       Data Output model. Sources I want to support:
   - REST API
   - User Input (web forms)
-  - Triggers (ASYNC queued task)
+  - Triggers (ASYNC queued tasks)
   - Triggers (SYNC webhook)
-- [ ] All data types should have a customizable access policy.
+- [ ] All data types should have a customizable access policy. With policies
+      enabled, data will be filtered automatically, with sensible defaults.
 
 ### Roadmap
 
 - [ ] #[magic] macros that will give sensible defaults given only a basic
-      struct.
+      struct. Per the above tenet to favor derive macros and traits,
+      the #[magic] macro will primarily just add a bunch of derive macros.
 - [ ]
 - [ ]
 - [ ]
