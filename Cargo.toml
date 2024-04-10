@@ -1,8 +1,6 @@
 [workspace]
 members = [
-    "crates/auth", 
     "crates/application", 
-    "crates/auth",
     "crates/deployer",
     "crates/forms",
     "crates/geometry",
