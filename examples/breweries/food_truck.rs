@@ -20,14 +20,3 @@ impl FoodTruck {
         }
     }
 }
-
-impl Default for FoodTruck {
-    fn default() -> Self {
-        Self {
-            id: uuid::Uuid::new_v4(),
-            name: "New Truck".to_string(),
-            description: None,
-            website_url: None,
-        }
-    }
-}

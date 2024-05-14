@@ -1,5 +1,5 @@
-use chrono::Duration;
 use tailwag_macros::derive_magic;
+use uuid::Uuid;
 
 derive_magic! {
     pub struct Event {
@@ -14,15 +14,15 @@ derive_magic! {
     }
 }
 
-impl Default for Event {
-    fn default() -> Self {
-        Self {
-            id: uuid::Uuid::new_v4(),
-            name: "New Brewery".to_string(),
-            description: None,
-            start_time: chrono::Utc::now().naive_utc(),
-            food_truck_id: uuid::Uuid::default(),
-            brewery_id: uuid::Uuid::default(),
-        }
-    }
-}
+// impl Default for Event {
+//     fn default() -> Self {
+//         Self {
+//             id: uuid::Uuid::new_v4(),
+//             name: "New Brewery".to_string(),
+//             description: None,
+//             start_time: chrono::Utc::now().naive_utc(),
+//             food_truck_id: uuid::Uuid::default(),
+//             brewery_id: uuid::Uuid::default(),
+//         }
+//     }
+// }

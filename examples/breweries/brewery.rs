@@ -1,10 +1,6 @@
-use axum::{
-    http::{HeaderMap, HeaderValue},
-    response::IntoResponse,
-    Json,
-};
+use axum::http::{HeaderMap, HeaderValue};
 use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, NaiveTime};
-use reqwest::{Client, Error, StatusCode};
+use reqwest::{Client, Error};
 use tailwag_orm::{
     data_definition::exp_data_system::DataSystem,
     data_manager::{
@@ -12,7 +8,7 @@ use tailwag_orm::{
         traits::{DataProvider, WithFilter},
         PostgresDataProvider,
     },
-    queries::filterable_types::FilterEq,
+    queries::{filterable_types::FilterEq, Insertable},
 };
 
 use crate::{event::Event, food_truck::FoodTruck};
@@ -28,6 +24,7 @@ use crate::{event::Event, food_truck::FoodTruck};
     tailwag::macros::Updateable,
     tailwag::macros::Deleteable,
     tailwag::macros::Filterable,
+    Default,
     tailwag::macros::BuildRoutes,
     tailwag::macros::Id,
     tailwag::macros::AsEguiForm,
@@ -47,23 +44,24 @@ pub struct Brewery {
     food_truck_extraction_regex: Option<String>,
 }
 
-impl Default for Brewery {
-    fn default() -> Self {
-        Self {
-            id: uuid::Uuid::new_v4(),
-            name: "New Brewery".to_string(),
-            description: None,
-            website_url: None,
-            food_truck_extraction_regex: None,
-        }
-    }
-}
+// impl Default for Brewery {
+//     fn default() -> Self {
+//         Self {
+//             id: uuid::Uuid::new_v4(),
+//             name: "New Brewery".to_string(),
+//             description: None,
+//             website_url: None,
+//             food_truck_extraction_regex: None,
+//         }
+//     }
+// }
 
 pub async fn temp_webhook(
     // params: std::collections::HashMap<String, String>
     id: String,
     data_providers: DataSystem,
 ) -> Option<Vec<Event>> {
+    let m = tailwag_web_service::application::http::route::HttpMethod::Get;
     // let (Some(id),) = (
     let (Some(id), Some(breweries), Some(events), Some(food_trucks)) = (
         // params.get("id"),
@@ -169,7 +167,8 @@ impl Brewery {
                     truck
                 },
                 None => {
-                    let truck = food_trucks.create(FoodTruck::new(food_truck_name)).await.unwrap();
+                    type FoodTruckCreate = <FoodTruck as Insertable>::CreateRequest;
+                    let truck = food_trucks.create( FoodTruckCreate{name: food_truck_name.to_string(), ..Default::default()}).await.unwrap();
                     log::info!("Created new food truck: {}", truck);
                     truck
                 }
@@ -186,7 +185,8 @@ impl Brewery {
                 .unwrap()
                 .is_empty()
             {
-                let mut new_event = Event::default();
+                let mut new_event =
+                    <Event as tailwag_orm::queries::Insertable>::CreateRequest::default();
                 new_event.name = format!("{} at {}", truck.name, self.name);
                 new_event.food_truck_id = *truck.id();
                 new_event.brewery_id = *self.id();

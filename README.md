@@ -128,9 +128,6 @@ A: I am a strong believer in practice as a productivity tool. I started these
 libraries as a self-study learning exercise, and over time they've grown into
 something more useful.
 
-I have used many of these libraries and highly recommend them - this is merely a
-separate project.
-
 ##### Q: What's up with the macro crates?
 
 A: The first macros I wrote were a mess of spaghetti code, and I've slowly been
@@ -157,8 +154,8 @@ easily. Such is the struggle of all software projects.
 A: Please [file an issue](https://github.com/nikwithak/tailwag/issues/new) or
 [send me an email](mailto:nik@nikgilmore.com)!
 
-##### Can I hire you to build or support my application?
+##### Can I hire you to build / support my application?
 
 Yes! Whether you are building with Tailwag or another stack, (Python,
 TypeScript, React, Rust), send me an email me with the details of your project
-at [nwakg@pm.me](mailto:nwakg@pm.me) and I will get back to you shortly.
+at [nwakg@pm.me](mailto:nwakg@pm.me).

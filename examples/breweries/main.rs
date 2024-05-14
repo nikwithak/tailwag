@@ -18,12 +18,12 @@ async fn main() {
         .with_resource::<Event>()
         .with_resource::<FoodTruck>()
         // .with_webhook("/brewery/{id}/")
-        .build_service()
-        .await;
+        .build_service();
 
-    let web_svc = tokio::spawn(svc.run());
-    _ = run_gui().await;
-    _ = web_svc.await;
+    // let gui_thread = tokio::spawn(run_gui());
+    // _ = run_gui().await;
+    svc.run().await.expect("App failed to exit gracefully");
+    // _ = gui_thread.await;
 }
 
 async fn run_gui() {

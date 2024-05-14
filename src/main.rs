@@ -7,7 +7,8 @@ fn main() {
         Some("deploy") => println!("deploy not currently supported"),
         // Some("connect") => todo!(),
         // Some("run") => todo!(), // Thinkign: `tw run gui` or `tw run webservice` or `tw run tasks` / `tw run all`
-        Some(_) | None => print_help(),
+        // Some(_) | None => print_help(),
+        Some(_) | None => println!("Nothing is currently supported!"),
     }
 }
 
