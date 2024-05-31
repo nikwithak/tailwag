@@ -27,7 +27,10 @@ Sub-crates:
 ## Project Status: Experimental
 
 This project is being actively developed in my free time, although it is still
-in early stages.
+in early stages. It currently has a large number of `unwrap()` calls, `TODO`
+comments, and unoptimized code. I've made an effort to document known technical
+debt as comments in the code. The macros in particular are a bit funky (see
+FAQ - "What's up with the macros?")
 
 ## Getting Started
 
@@ -46,13 +49,13 @@ CRUD operations for the `Item` struct:
 #### Minimal Working Example
 
 The following is an entire Rust program build on Tailwag. This chunk of code
-creates a REST webservice running on `http://localhost:8081`, with the
-`/events/` endpoint supporting CRUD operations through `POST`, `GET`, `PATCH`,
-and `DELETE` HTTP methods. `/events/{id}` is also supported for GET.
+creates a REST webservice running on `http://localhost:8081`, with the `/task/`
+endpoint supporting CRUD operations through `POST`, `GET`, `PATCH`, and `DELETE`
+HTTP methods. `/task/{id}` is also supported for GET.
 
 ```rust
       fn main() {
-
+        // TODO
       }
 ```
 
@@ -64,9 +67,9 @@ More examples can be found in the `/examples` folder.
    the real test. Please file issues for any challenges or bugs you encounter.
    If you have a use case that isn't supported, please file it as an issue.
 
-2. Stars & Likes - If you are getting value of Tailwag, consider starring or
-   watching the project, and/or following me (@nikwithak) on GitHub. These are
-   zero-cost ways to extend the audience of my work.
+2. Stars & Likes - Consider starring or watching the project, and/or following
+   me (@nikwithak) on GitHub. These are zero-cost ways to extend the audience of
+   my work.
 
 3. Donate or Sponsor - This project has been written entirely in my free time,
    and your donations allow me to continue devoting time and energy to
