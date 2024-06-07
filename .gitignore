@@ -4,3 +4,6 @@
 **/tags
 .vscode/
 out/
+.env
+downloaded_images/
+
