@@ -62,9 +62,29 @@ creates a REST webservice running on `http://localhost:8081`, with the `/todo/`
 endpoint supporting CRUD operations through `POST`, `GET`, `PATCH`, and `DELETE`
 HTTP methods. `/todo/{id}` is also supported for GET.
 
-Note that you must also have `serde` and `sqlx` as dependencies in your
-`Cargo.toml` - these are used by the macros, but not currently re-exported by
-tailwag.
+Note that tailwag has some dependencies that are not current re-exported by
+tailwag. Let's create a project from scratch to get our first Tailwag
+application:
+
+First, create a new Cargo project:
+
+```bash
+cargo new my_tailwag_app
+cd my_tailwag_app
+```
+
+Next add our dependencies:
+
+```bash
+cargo add tailwag
+cargo add serde --features derive # Required for just about all tailwag operations.
+cargo add chrono # If you need datetime support.
+cargo add uuid # Required for tailwag database support.
+cargo add sqlx # Required for database communication with Postgres.
+cargo add tokio --features full # Required for the async runtime.
+```
+
+Now our application:
 
 ```rust
 use tailwag::macros::derive_magic;
@@ -74,7 +94,7 @@ use tailwag::web::application::WebService;
 async fn main() {
     derive_magic! {
         struct Todo {
-            id: uuid::Uuid,
+            id: uuid::Uuid, // Note: Currently all data types MUST have an `id` of type `uuid::Uuid`. A future version will remove this limitation.
             title: String,
             description: String,
             due_date: chrono::NaiveDateTime,
@@ -89,8 +109,64 @@ async fn main() {
 }
 ```
 
-The `derive_magic!` macro derives a lot of traits that the `WebService` struct
-uses for building routes, postgres data, etc.
+    The `derive_magic!` macro derives a lot of traits that the `WebService` struct
+    uses for building routes, postgres data, etc.
+
+Don't forget to start your postgres instance:
+
+```bash
+docker run --name some-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5432:5432 postgres
+```
+
+Now run the service:
+
+```bash
+cargo run
+```
+
+Hit the endpoint with some TODOs:
+
+```bash
+curl -X POST http://localhost:8081/todo \
+    -H "Content-Type: application/json" \
+    -d '{"title": "Add multithread support", "description": "To be viable in a Production environment, tailwag needs to support multiple concurrent requests.", "due_date": "2024-06-13T00:00:00"}'
+
+curl -X POST http://localhost:8081/todo \
+    -H "Content-Type: application/json" \
+    -d '{"title": "Remove id requirement", "description": "Update tailwag to allow more flexibility for table primary keys.", "due_date": "2024-06-13T00:00:00"}'
+```
+
+Now let's GET all the TODOs:
+
+```bash
+curl http://localhost:8081/todo | jq
+[
+  {
+    "id": "68e20f9e-0fbd-4bda-9095-b2749948579d",
+    "title": "Add multithread support",
+    "description": "To be viable in a Production environment, tailwag needs to support multiple concurrent requests.",
+    "due_date": "2024-06-13T00:00:00"
+  },
+  {
+    "id": "505180d4-eb25-4352-8599-6e4d69bd2806",
+    "title": "Remove id requirement",
+    "description": "Update tailwag to allow more flexibility for table primary keys.",
+    "due_date": "2024-06-13T00:00:00"
+  }
+]
+```
+
+Or just a single TODO:
+
+```bash
+curl http://localhost:8081/todo | jq
+{
+  "id": "68e20f9e-0fbd-4bda-9095-b2749948579d",
+  "title": "Add multithread support",
+  "description": "To be viable in a Production environment, tailwag needs to support multiple concurrent requests.",
+  "due_date": "2024-06-13T00:00:00"
+}
+```
 
 This and more detailed examples can be found in the `/examples` folder. There
 are also some more detailed examples in the
