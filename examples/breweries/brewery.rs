@@ -27,7 +27,7 @@ use crate::{event::Event, food_truck::FoodTruck};
     Default,
     tailwag::macros::BuildRoutes,
     tailwag::macros::Id,
-    tailwag::macros::AsEguiForm,
+    // tailwag::macros::AsEguiForm, // GUI features are not yet released.
     tailwag::macros::Display,
     tailwag::forms::macros::GetForm,
 )]

@@ -1,14 +1,14 @@
 [workspace]
 members = [
     "crates/application",
-    "crates/deployer",
+    # "crates/deployer",
     "crates/forms",
-    "crates/geometry",
-    "crates/gui",
+    # "crates/geometry",
+    # "crates/gui",
     "crates/macros",
-    "crates/openapi_generator",
+    # "crates/openapi_generator",
     "crates/orm",
-    "crates/templater",
+    # "crates/templater",
     "crates/utils",
 ]
 
@@ -24,10 +24,11 @@ tailwag_web_service = { version = "0.1.0", path = "crates/application", optional
 tailwag_macros = { version = "0.1.0", path = "crates/macros", optional = true }
 tailwag_orm = { version = "0.1.0", path = "crates/orm", optional = true }
 tailwag_forms = { version = "0.1.0", path = "crates/forms", optional = true }
-tailwag_gui_tools = { version = "0.1.0", path = "crates/gui", optional = true }
+# tailwag_gui_tools = { version = "0.1.0", path = "crates/gui", optional = true }
 tailwag_utils = { version = "0.1.0", path = "crates/utils", optional = true }
-tailwag_deployer = { version = "0.1.0", path = "crates/deployer", optional = true }
-openapi_generator = { version = "0.1.0", path = "crates/openapi_generator", optional = true }
+
+# tailwag_deployer = { version = "0.1.0", path = "crates/deployer", optional = true }
+# openapi_generator = { version = "0.1.0", path = "crates/openapi_generator", optional = true }
 serde_json = "1.0.117"
 tower-http = { version = "0.5.1", features = ["trace", "full"] }
 uuid = { version = "1.4.1", features = ["v4"] }
@@ -56,10 +57,12 @@ uuid = "1.4.1"
 [features]
 default = ["all"]
 all = ["web_service", "macros", "orm", "utils", "deployer", "gui", "forms"]
-web_service = ["dep:tailwag_web_service", "dep:openapi_generator"]
+web_service = ["dep:tailwag_web_service"]
 macros = ["dep:tailwag_macros"]
 forms = ["dep:tailwag_forms"]
 orm = ["tailwag_macros?/orm", "tailwag_macros?/default", "dep:tailwag_orm"]
-gui = ["dep:tailwag_gui_tools"]
+# gui = ["dep:tailwag_gui_tools"]
+gui = [] # GUI features not yet released
 utils = ["dep:tailwag_utils"]
-deployer = ["dep:tailwag_deployer"]
+deployer = [] # Deployer features not yet released
+# deployer = ["dep:tailwag_deployer"]

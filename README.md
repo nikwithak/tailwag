@@ -1,27 +1,29 @@
 # Tailwag - The Rapid Rust Toolkit
 
 This repo consolidates a variety of Rust libraries intended to rapidly create
-scalable, Production-ready applications. The end goal of Tailwag is to enable
-same-day zero-to-production development and deployments for new services, with
-sensible defaults.
+REST APIs and data applications. The end goal of Tailwag is to enable same-day
+zero-to-production development and deployments for new services, with sensible
+defaults.
 
 The current developmental version supports standing up a REST service and a
 Postgres datastore for datatypes composed of primitives, timestamps, and UUIDs.
-It does not currently support joins or nested data structures.
+It does currently support joins or nested data structures, except for limited
+One-to-one data structure support.
 
 Sub-crates:
 
 - **tailwag_orm**: An ORM for mapping Rust data types to database queries or
   other data stores. It currently supports creating new Postgres tables and CRUD
   operations, with experimental support for migrating the tables on changes.
-- **tailwag_forms** _(experimental)_: A crate used for representing the form
-  structure for creating or editing data. This exports to a format readable by
-  `tailwag_react_manager` (working title), a NextJS application that pairs with
-  this toolkit.
+- **tailwag_forms** \_: A crate used for representing the form structure for
+  creating or editing data. This exports to a format readable by
+  [`tailwag_react_manager`](https://github.com/nikwithak/tailwag_react_manager),
+  a NextJS application that pairs with this toolkit to generate management form.
+
 - **tailwag_web_application**: This is the primary interaction for Tailwag in
   its current state. I started building this on top of `axum`, which is itself a
-  great web framework, but as I was trying to work around some limitations of
-  the API, I ended up implementing my own HTTP handler, and finally removed
+  great web framework, but as I was trying to work around some of its
+  limitations, I ended up implementing my own HTTP handler, and finally removed
   `axum` as a dependency.
 
 ## Project Status: Experimental
@@ -30,7 +32,14 @@ This project is being actively developed in my free time, although it is still
 in early stages. It currently has a large number of `unwrap()` calls, `TODO`
 comments, and unoptimized code. I've made an effort to document known technical
 debt as comments in the code. The macros in particular are a bit funky (see
-FAQ - "What's up with the macros?")
+FAQ - "What's up with the macros?").
+
+I've made made some recent improvements to the error handling and hope soon to
+eliminate all `.unwrap()` calls, which currently cause unexpected crashes in
+some cases.
+
+It is also currently single-threaded, only able to handle one request at a time,
+which is due to the WIP status of the underlying HTTP implementation.
 
 ## Getting Started
 
@@ -49,17 +58,43 @@ CRUD operations for the `Item` struct:
 #### Minimal Working Example
 
 The following is an entire Rust program build on Tailwag. This chunk of code
-creates a REST webservice running on `http://localhost:8081`, with the `/task/`
+creates a REST webservice running on `http://localhost:8081`, with the `/todo/`
 endpoint supporting CRUD operations through `POST`, `GET`, `PATCH`, and `DELETE`
-HTTP methods. `/task/{id}` is also supported for GET.
+HTTP methods. `/todo/{id}` is also supported for GET.
+
+Note that you must also have `serde` and `sqlx` as dependencies in your
+`Cargo.toml` - these are used by the macros, but not currently re-exported by
+tailwag.
 
 ```rust
-      fn main() {
-        // TODO
-      }
+use tailwag::macros::derive_magic;
+use tailwag::web::application::WebService;
+
+#[tokio::main]
+async fn main() {
+    derive_magic! {
+        struct Todo {
+            id: uuid::Uuid,
+            title: String,
+            description: String,
+            due_date: chrono::NaiveDateTime,
+        }
+    }
+    WebService::builder("Todo Service")
+        .with_resource::<Todo>()
+        .build_service()
+        .run()
+        .await
+        .expect("Web service crashed.");
+}
 ```
 
-More examples can be found in the `/examples` folder.
+The `derive_magic!` macro derives a lot of traits that the `WebService` struct
+uses for building routes, postgres data, etc.
+
+This and more detailed examples can be found in the `/examples` folder. There
+are also some more detailed examples in the
+[`tailwag_web_service`](https://github.com/nikwithak/tailwag_web_service) crate.
 
 ## How can I support the project?
 
@@ -68,8 +103,8 @@ More examples can be found in the `/examples` folder.
    If you have a use case that isn't supported, please file it as an issue.
 
 2. Stars & Likes - Consider starring or watching the project, and/or following
-   me (@nikwithak) on GitHub. These are zero-cost ways to extend the audience of
-   my work.
+   me ([@nikwithak](https://github.com/nikwithak)) on GitHub. These are
+   zero-cost ways to extend the audience of my work.
 
 3. Donate or Sponsor - This project has been written entirely in my free time,
    and your donations allow me to continue devoting time and energy to
@@ -104,28 +139,12 @@ application:
       The goal is to make sensible defaults for the general case, getting a
       standard, functional app ready with zero effort while also making it easy
       to override with custom behavior through trait implementations. In
-      general, I have trie to avoid procedural (non-derive) macros that perform
+      general, I have tried to avoid procedural (non-derive) macros that perform
       too much magic.
 
 ### FAQ
 
-##### Q: Why Rust?
-
-My experience has taught me that the most important part of building scalable,
-maintainable applications is to clearly define the data types you'll be working
-with. One of the biggest traps I have repeatedly seen startups fall into is a
-push to move fast instead of investing in a strong foundation. Hacked together
-prototypes become the foundation for multi-million dollar businesses, and those
-same business ignore security standards until their Series B investors start
-asking for SOC compliance. It is my personal opinion that this is a dangerous
-and unsustainable business model.
-
-Allowing willynillyness for core system can lead to unmanageable tech debt and
-system fragility as the company scales. Rust's strong typing and memory safety
-make this easy to manage and force developers to check our assumptions when
-coding, instead of when investigating Production incidents.
-
-##### Q: Why not use existing frameworks like `axum`, `actix-web`, `diesel`, `yew` or `<other_library>`?
+##### Q: Why not use existing crates like `axum`, `actix-web`, `diesel`, `yew` or `<other_library>`?
 
 A: I am a strong believer in practice as a productivity tool. I started these
 libraries as a self-study learning exercise, and over time they've grown into
@@ -140,9 +159,9 @@ They're just a mess right now.
 Currently I have two macro sub-crates for the crates that have custom macros,
 one for the exports and one for the logic. I initially thought this would make
 it easier to reuse and test the macros, given the compiler-enforced requirement
-that `proc_macro` exports be an entirely separate crate - but so far I've just
-created another annoying hurdle to jump around when changing the macros. I will
-be refactoring and simplify those macros in the future.
+that `proc_macro` exports be an entirely separate crate - but the reality is
+that I just created an annoying hurdle to jump around when changing the macros.
+I will be refactoring and simplify those macros in the future.
 
 ##### Q: Why were certain decisions made?
 
@@ -157,8 +176,29 @@ easily. Such is the struggle of all software projects.
 A: Please [file an issue](https://github.com/nikwithak/tailwag/issues/new) or
 [send me an email](mailto:nik@nikgilmore.com)!
 
-##### Can I hire you to build / support my application?
+##### Can I use Tailwag in Production?
 
-Yes! Whether you are building with Tailwag or another stack, (Python,
-TypeScript, React, Rust), send me an email me with the details of your project
-at [nwakg@pm.me](mailto:nwakg@pm.me).
+A: You are free to use Tailwag however you see fit, although it has some known
+limitations at this time. It is provided "as is", without warranty of any kind.
+If you use it in a Production application, make sure you test extensively.
+
+## LICENSE
+
+Copyright (c) 2024 Nik Gilmore (@nikwithak)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

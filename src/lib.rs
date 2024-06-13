@@ -1,7 +1,3 @@
-/// Does nothing yet. Eventually this will include the logic for deploying Applications and Systems to multiple types of infrastructure (e.g. one-machine servers, clusters, k8s, AWS, etc.)
-#[cfg(feature = "deployer")]
-pub use tailwag_deployer as deployer;
-
 /// This contains all of the library code needed for configuring the Postgres DB for a type.
 #[cfg(feature = "orm")]
 pub use tailwag_orm as orm;
@@ -21,8 +17,9 @@ pub use tailwag_macros as macros;
 
 /// Crate containing GUI application logic and common widgets.
 /// TODO: Rename to `egui` to represent the underlying framework
-#[cfg(feature = "gui")]
-pub use tailwag_gui_tools as gui;
+/// GUI features not yet released
+// #[cfg(feature = "gui")]
+// pub use tailwag_gui_tools as gui;
 
 /// Various common utilities for coding. Things like string manipulation, common struct patterns, etc.
 #[cfg(feature = "forms")]
