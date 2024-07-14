@@ -8,7 +8,6 @@ members = [
     "crates/macros",
     # "crates/openapi_generator",
     "crates/orm",
-    # "crates/templater",
     "crates/utils",
 ]
 
