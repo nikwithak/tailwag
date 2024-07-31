@@ -1,0 +1,25 @@
+edition = "2021"
+unstable_features = true
+combine_control_expr = false
+wrap_comments = true
+fn_args_layout = "Vertical"
+format_code_in_doc_comments = true
+imports_layout = "Vertical"
+match_block_trailing_comma = true
+imports_granularity = "Crate"
+normalize_comments = true
+group_imports = "StdExternalCrate"
+chain_width = 80
+
+trailing_semicolon = false
+
+format_strings = true
+
+struct_lit_width = 0
+struct_lit_single_line = false
+
+short_array_element_width_threshold = 0
+struct_field_align_threshold = 20
+
+use_small_heuristics = "Off"
+use_field_init_shorthand = true
