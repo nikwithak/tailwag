@@ -5,6 +5,7 @@ use brewery::Brewery;
 use event::Event;
 use food_truck::FoodTruck;
 
+#[cfg(feature = "gui")]
 use eframe::{epaint::Vec2, run_native, NativeOptions};
 // use tailwag::gui::widgets::item_manager::item_manager::ItemManager;
 use tailwag::orm::data_manager::rest_api::RestApiDataProvider;

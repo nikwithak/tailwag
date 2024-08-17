@@ -36,7 +36,7 @@ CRUD operations for the `Item` struct:
 > `postgres:postgres` as the username:password in development mode.
 >
 > ```
-> docker run --name some-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5432:5432 postgres
+> docker run --name postgres-dev -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5432:5432 postgres
 > ```
 
 #### Minimal Working Example

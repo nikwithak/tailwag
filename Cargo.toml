@@ -36,6 +36,7 @@ tower-http = { version = "0.5.1", features = ["trace", "full"] }
 uuid = { version = "1.4.1", features = ["v4"] }
 tailwag_orm_macros = { version = "0.1.0", path = "crates/orm/macros" }
 chrono = { version = "0.4.33", features = ["serde"] }
+eframe = { version = "0.23.0", optional = true }
 reqwest = "0.11.24"
 log = "0.4.20"
 hurl = "4.2.0"
@@ -43,7 +44,6 @@ hurl = "4.2.0"
 [dev-dependencies]
 async-trait = "0.1.73"
 axum = "0.6.20"
-eframe = "0.23.0"
 regex = "1.10.3"
 serde = { version = "1.0.202", features = ["derive"] }
 sqlx = { version = "0.7.1", features = [
@@ -55,16 +55,17 @@ sqlx = { version = "0.7.1", features = [
 ] }
 tokio = { version = "1.32.0", features = ["full"] }
 uuid = "1.4.1"
+async-stripe = { version = "0.34.1", features = ["runtime-tokio-hyper"] }
 
 [features]
 default = ["all"]
-all = ["web_service", "macros", "orm", "utils", "deployer", "gui", "forms"]
+all = ["web_service", "macros", "orm", "utils", "deployer", "forms"]
 web_service = ["dep:tailwag_web_service"]
 macros = ["dep:tailwag_macros"]
 forms = ["dep:tailwag_forms"]
 orm = ["tailwag_macros?/orm", "tailwag_macros?/default", "dep:tailwag_orm"]
 # gui = ["dep:tailwag_gui_tools"]
-gui = [] # GUI features not yet released
+gui = ["dep:eframe"] # GUI features not yet released
 utils = ["dep:tailwag_utils"]
 deployer = [] # Deployer features not yet released
 # deployer = ["dep:tailwag_deployer"]
