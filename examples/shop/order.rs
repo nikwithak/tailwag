@@ -1,4 +1,4 @@
-use crate::stripe_integration::stripe_event;
+use crate::{stripe_integration::stripe_event, Product};
 use tailwag_macros::Display;
 use uuid::Uuid;
 
@@ -119,8 +119,8 @@ pub enum ShopOrderStatus {
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct CartItem {
-    id: Uuid,
-    quantity: usize,
+    pub(crate) id: Uuid,
+    pub(crate) quantity: usize,
     // TODO:
     // customizations: Vec<Customization>,
 }
@@ -129,14 +129,16 @@ pub mod checkout {
     use std::collections::HashMap;
 
     use crate::{CartItem, Product, ShopOrder};
+    use stripe::CreateCheckoutSessionLineItems;
     use tailwag_orm::{
-        data_manager::{traits::DataProvider, PostgresDataProvider},
+        data_manager::{rest_api::Id, traits::DataProvider, PostgresDataProvider},
         queries::filterable_types::FilterEq,
     };
     use tailwag_web_service::{
         application::http::route::{IntoResponse, Response, ServerData},
         Error,
     };
+    use uuid::Uuid;
 
     #[derive(serde::Serialize, serde::Deserialize, Debug)]
     pub struct CheckoutRequest {
@@ -150,15 +152,31 @@ pub mod checkout {
         orders: PostgresDataProvider<ShopOrder>,
         stripe_client: ServerData<stripe::Client>,
     ) -> Result<Response, tailwag_web_service::Error> {
-        let products_fut = req.cart_items.iter().map(|i| {
-            products.get(
-                move |filter| filter.id.eq(i.id), // .eq(i.product_id.clone())
-            )
-        });
-        let mut order_products = Vec::new();
-        for product in products_fut {
-            order_products.push(product.await.unwrap().unwrap())
+        log::debug!("Got a request: {:?}", req);
+        let mut stripe_line_items = Vec::new();
+        for lineitem in req.cart_items {
+            let product = products
+                .get(
+                    move |filter| filter.id.eq(lineitem.id), // .eq(i.product_id.clone())
+                )
+                .await?
+                .ok_or(tailwag_web_service::Error::BadRequest("Invalid product ID".into()))?;
+
+            let stripe_item = stripe::CreateCheckoutSessionLineItems {
+                adjustable_quantity: None,
+                dynamic_tax_rates: None,
+                price: product.stripe_price_id.clone(),
+                price_data: None,
+                quantity: Some(lineitem.quantity as u64), // TODO: Actually get the quantity.
+                tax_rates: None,
+            };
+            stripe_line_items.push(stripe_item);
         }
+
+        // impl From<&Product> for stripe::CreateCheckoutSessionLineItems {
+        //     fn from(val: &Product) -> Self {
+        //     }
+        // }
 
         type OrderCreateRequest =
             <PostgresDataProvider<ShopOrder> as DataProvider<ShopOrder>>::CreateRequest;
@@ -166,14 +184,8 @@ pub mod checkout {
             ..Default::default()
         };
         let order = orders.create(order).await?;
-        // let Ok(order) = orders.create(order).await else {
-        //     log::error!("Failed to create order");
-        //     // TODO: Figure out how to consume the ? operator here. Writing this every time is annoying.
-        //     return Response::internal_server_error();
-        // };
 
-        log::debug!("Got a request: {:?}", req);
-        let url = create_stripe_session(order, order_products, &stripe_client)
+        let url = create_stripe_session(order, stripe_line_items, &stripe_client)
             .await
             .url
             .ok_or(Error::InternalServerError("Failed to create stripe session.".into()))?;
@@ -187,11 +199,11 @@ pub mod checkout {
 
     async fn create_stripe_session(
         order: ShopOrder,
-        products: Vec<Product>,
+        lineitems: Vec<CreateCheckoutSessionLineItems>,
         stripe_client: &stripe::Client,
     ) -> stripe::CheckoutSession {
         let order_id = &order.id.to_string();
-        let success_url = format!("http://localhost:3000/order/{}", &order.id);
+        let success_url = format!("http://localhost:3000/order/{}", &order.id); // TODO: Unhardcode this. Should it be part of the request from client?
         let params = stripe::CreateCheckoutSession {
             success_url: Some(&success_url), // TODO: Configure this
             // customer_email: Some(&order.customer_email),
@@ -212,7 +224,7 @@ pub mod checkout {
             }),
             client_reference_id: Some(order_id),
             mode: Some(stripe::CheckoutSessionMode::Payment),
-            line_items: Some(products.iter().map(|li| li.into()).collect()),
+            line_items: Some(lineitems),
             ..Default::default()
         };
 

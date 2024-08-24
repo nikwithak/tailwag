@@ -39,6 +39,7 @@ mod tailwag {
 )]
 #[create_type(CreateProductRequest)]
 #[post(create_product)]
+// Can only upload an image AFTER the object has been created, due to current limitations with binary file uploads.
 #[actions(("/{id}/image", save_image, RoutePolicy::RequireAuthentication))]
 #[get_policy(RoutePolicy::Public)]
 #[list_policy(RoutePolicy::Public)]
@@ -46,11 +47,6 @@ mod tailwag {
 #[delete_policy(RoutePolicy::RequireAuthentication)]
 #[patch_policy(RoutePolicy::RequireAuthentication)]
 #[delete_policy(RoutePolicy::RequireAuthentication)]
-// #[post_policy(RoutePolicy::Public)]
-// #[delete_policy(RoutePolicy::Public)]
-// #[patch_policy(RoutePolicy::Public)]
-// #[delete_policy(RoutePolicy::Public)]
-// Can only upload an image AFTER the object has been created, due to current limitations with binary file uploads.
 pub struct Product {
     #[no_form]
     id: Uuid,
@@ -58,26 +54,13 @@ pub struct Product {
     description: String,
     #[no_form]
     #[no_filter]
-    stripe_price_id: Option<String>,
+    pub(crate) stripe_price_id: Option<String>,
     #[no_form]
     #[no_filter]
     stripe_product_id: Option<String>,
     #[no_filter]
     image_metadata: Option<ImageMetadata>,
     price_usd_cents: i64,
-}
-
-impl From<&Product> for stripe::CreateCheckoutSessionLineItems {
-    fn from(val: &Product) -> Self {
-        stripe::CreateCheckoutSessionLineItems {
-            adjustable_quantity: None,
-            dynamic_tax_rates: None,
-            price: val.stripe_price_id.clone(),
-            price_data: None,
-            quantity: Some(1), // TODO: Actually get the quantity.
-            tax_rates: None,
-        }
-    }
 }
 
 /// Here is an example of overriding the CreateRequest type.
