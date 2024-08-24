@@ -2,10 +2,7 @@ use serde::{Deserialize, Serialize};
 use stripe::StripeError;
 use tailwag_orm::{
     data_manager::{traits::DataProvider, PostgresDataProvider},
-    queries::{
-        filterable_types::{FilterEq, Filterable, FilterableType},
-        Filter,
-    },
+    queries::filterable_types::FilterEq,
 };
 use tailwag_web_service::application::http::route::RoutePolicy;
 use tailwag_web_service::{
@@ -45,14 +42,14 @@ mod tailwag {
 #[actions(("/{id}/image", save_image, RoutePolicy::RequireAuthentication))]
 #[get_policy(RoutePolicy::Public)]
 #[list_policy(RoutePolicy::Public)]
-// #[post_policy(RoutePolicy::RequireAuthentication)]
-// #[delete_policy(RoutePolicy::RequireAuthentication)]
-// #[patch_policy(RoutePolicy::RequireAuthentication)]
-// #[delete_policy(RoutePolicy::RequireAuthentication)]
-#[post_policy(RoutePolicy::Public)]
-#[delete_policy(RoutePolicy::Public)]
-#[patch_policy(RoutePolicy::Public)]
-#[delete_policy(RoutePolicy::Public)]
+#[post_policy(RoutePolicy::RequireAuthentication)]
+#[delete_policy(RoutePolicy::RequireAuthentication)]
+#[patch_policy(RoutePolicy::RequireAuthentication)]
+#[delete_policy(RoutePolicy::RequireAuthentication)]
+// #[post_policy(RoutePolicy::Public)]
+// #[delete_policy(RoutePolicy::Public)]
+// #[patch_policy(RoutePolicy::Public)]
+// #[delete_policy(RoutePolicy::Public)]
 // Can only upload an image AFTER the object has been created, due to current limitations with binary file uploads.
 pub struct Product {
     #[no_form]

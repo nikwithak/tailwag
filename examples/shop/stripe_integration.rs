@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use stripe::{CheckoutSessionPaymentStatus, Event, EventObject};
 use tailwag_orm::{
-    data_manager::{traits::DataProvider, PostgresDataProvider},
+    data_manager::{rest_api::Id, traits::DataProvider, PostgresDataProvider},
     queries::filterable_types::FilterEq,
 };
 use tailwag_utils::email::sendgrid::SendGridEmailClient;
@@ -154,7 +154,7 @@ Wof wof!
             Err(e) => {
                 log::error!("Failed to send order confirmation email {}", e);
             },
-            _ => log::info!("Send email for order id {}", &order.id),
+            _ => log::info!("Send email for order id {}", &order.id()),
         };
         order.confirmation_email_sent = true;
     }

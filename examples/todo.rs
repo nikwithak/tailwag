@@ -1,4 +1,3 @@
-use tailwag::macros::derive_magic;
 use tailwag::web::application::WebService;
 
 #[tokio::main]
