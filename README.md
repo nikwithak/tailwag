@@ -68,7 +68,7 @@ cargo add tailwag
 cargo add serde --features derive # Required for just about all tailwag operations.
 cargo add chrono # If you need datetime support.
 cargo add uuid # Required for tailwag database support.
-cargo add sqlx # Required for database communication with Postgres.
+cargo add sqlx@0.7.1 # Required for database communication with Postgres - an older version is currently used by tailwag, and not compatible with 0.8.x+
 cargo add tokio --features full # Required for the async runtime.
 ```
 
