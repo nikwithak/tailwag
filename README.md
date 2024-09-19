@@ -59,6 +59,10 @@ cd my_tailwag_app
 
 Next add our dependencies:
 
+
+> [!TIP]
+> The crates.io crate is not updated frequently. To stay up-to-date with this crate, consider using `cargo add --git https://github.com/nikwithak/tailwag`.
+
 ```bash
 cargo add tailwag
 cargo add serde --features derive # Required for just about all tailwag operations.

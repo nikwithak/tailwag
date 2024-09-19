@@ -13,7 +13,7 @@ members = [
 
 [package]
 name = "tailwag"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/nikwithak/tailwag"
@@ -22,19 +22,19 @@ description = "This is the main crate for the Tailwag suite, an experimental fra
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tailwag_web_service = { version = "0.1.0", path = "crates/application", optional = true }
-tailwag_macros = { version = "0.1.0", path = "crates/macros", optional = true }
-tailwag_orm = { version = "0.1.0", path = "crates/orm", optional = true }
-tailwag_forms = { version = "0.1.0", path = "crates/forms", optional = true }
+tailwag_web_service = { version = "0.2.0", path = "crates/application", optional = true }
+tailwag_macros = { version = "0.2.0", path = "crates/macros", optional = true }
+tailwag_orm = { version = "0.2.0", path = "crates/orm", optional = true }
+tailwag_forms = { version = "0.2.0", path = "crates/forms", optional = true }
 # tailwag_gui_tools = { version = "0.1.0", path = "crates/gui", optional = true }
-tailwag_utils = { version = "0.1.0", path = "crates/utils", optional = true }
+tailwag_utils = { version = "0.1.1", path = "crates/utils", optional = true }
+tailwag_orm_macros = { version = "0.2.0", path = "crates/orm/macros" }
 
 # tailwag_deployer = { version = "0.1.0", path = "crates/deployer", optional = true }
 # openapi_generator = { version = "0.1.0", path = "crates/openapi_generator", optional = true }
 serde_json = "1.0.117"
 tower-http = { version = "0.5.1", features = ["trace", "full"] }
 uuid = { version = "1.4.1", features = ["v4"] }
-tailwag_orm_macros = { version = "0.1.0", path = "crates/orm/macros" }
 chrono = { version = "0.4.33", features = ["serde"] }
 eframe = { version = "0.23.0", optional = true }
 reqwest = "0.11.24"

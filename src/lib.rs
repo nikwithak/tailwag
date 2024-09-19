@@ -24,3 +24,12 @@ pub use tailwag_macros as macros;
 /// Various common utilities for coding. Things like string manipulation, common struct patterns, etc.
 #[cfg(feature = "forms")]
 pub use tailwag_forms as forms;
+
+pub mod prelude {
+    pub use macros::derive_magic;
+    pub use orm::data_manager::traits::WithFilter;
+    pub use orm::data_manager::PostgresDataProvider;
+    pub use orm::queries::filterable_types::*;
+    pub use web::application::http::route::*;
+    pub use web::application::WebService;
+}
