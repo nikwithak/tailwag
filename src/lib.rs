@@ -26,10 +26,10 @@ pub use tailwag_macros as macros;
 pub use tailwag_forms as forms;
 
 pub mod prelude {
-    pub use macros::derive_magic;
-    pub use orm::data_manager::traits::WithFilter;
-    pub use orm::data_manager::PostgresDataProvider;
-    pub use orm::queries::filterable_types::*;
-    pub use web::application::http::route::*;
-    pub use web::application::WebService;
+    pub use super::macros::derive_magic;
+    pub use super::orm::data_manager::traits::WithFilter;
+    pub use super::orm::data_manager::PostgresDataProvider;
+    pub use super::orm::queries::filterable_types::*;
+    pub use super::web::application::http::route::*;
+    pub use super::web::application::WebService;
 }

@@ -23,7 +23,7 @@ description = "This is the main crate for the Tailwag suite, an experimental fra
 
 [dependencies]
 tailwag_web_service = { version = "0.2.0", path = "crates/application", optional = true }
-tailwag_macros = { version = "0.2.0", path = "crates/macros", optional = true }
+tailwag_macros = { version = "0.2.1", path = "crates/macros", optional = true }
 tailwag_orm = { version = "0.2.0", path = "crates/orm", optional = true }
 tailwag_forms = { version = "0.2.0", path = "crates/forms", optional = true }
 # tailwag_gui_tools = { version = "0.1.0", path = "crates/gui", optional = true }
