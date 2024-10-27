@@ -61,7 +61,6 @@ pub async fn temp_webhook(
     id: String,
     data_providers: DataSystem,
 ) -> Option<Vec<Event>> {
-    let m = tailwag_web_service::application::http::route::HttpMethod::Get;
     // let (Some(id),) = (
     let (Some(id), Some(breweries), Some(events), Some(food_trucks)) = (
         // params.get("id"),

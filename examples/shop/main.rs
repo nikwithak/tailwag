@@ -1,12 +1,10 @@
-use serde::{Deserialize, Serialize};
 use tailwag_web_service::{
-    application::{
-        http::route::{IntoResponse, RequestContext, Response},
-        WebServiceBuildResponse,
+    application::WebServiceBuildResponse,
+    auth::gateway::{self, extract_session},
+    extras::{
+        email_alerts::WithEmailQueueTask,
+        image_upload::{self, ImageMetadata},
     },
-    auth::gateway::{self, extract_session, Session},
-    extras::image_upload::{self, ImageMetadata},
-    tasks::TaskScheduler,
 };
 mod product;
 pub use product::*;
@@ -33,50 +31,16 @@ impl ShopApplication {
             .with_resource::<OrderAmount>() // TODO - Needed to make sure the tables get created. TODO: Auto-create all direct dependent tables automatically in the ORM
             .with_resource::<ImageMetadata>() // TODO - Needed to make sure the tables get created. TODO: Auto-create all direct dependent tables automatically in the ORM
             .post_public("/checkout", checkout::checkout) // TODO
-            .post_public("/email", email_webhook)
             .get_public("/image/{filename}", image_upload::load_image)
             .get_public("/", || "Hello, world!".to_string())
             .with_server_data(stripe::Client::new(
                 std::env::var("STRIPE_API_KEY").expect("STRIPE_API_KEY is missing from env."), // TODO: Move to a 'config' automation / macro.
             ))
             .with_task(stripe_integration::handle_stripe_event)
-            .with_task(send_email)
+            .with_email_queue_task()
             .with_static_files()
             .build_service()
     }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct SendEmailEvent {
-    pub subject: String,
-    pub body: String,
-    pub recipient: String,
-}
-
-pub async fn email_webhook(
-    request: SendEmailEvent,
-    _data_providers: tailwag_orm::data_definition::exp_data_system::DataSystem,
-    mut task_queuer: TaskScheduler,
-    ctx: RequestContext,
-) -> impl IntoResponse {
-    if ctx.get_request_data::<Session>().is_none() {
-        return Response::unauthorized();
-    }
-    if task_queuer.enqueue(request).is_ok() {
-        Response::ok()
-    } else {
-        Response::internal_server_error()
-    }
-}
-
-pub async fn send_email(event: SendEmailEvent) {
-    let SendEmailEvent {
-        subject,
-        body,
-        recipient,
-    } = event;
-    let client = tailwag_utils::email::sendgrid::SendGridEmailClient::from_env().unwrap();
-    client.send_email(&recipient, &subject, &body).await.unwrap();
 }
 
 #[allow(unused)]

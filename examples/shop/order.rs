@@ -1,4 +1,4 @@
-use crate::{stripe_integration::stripe_event, Product};
+use crate::stripe_integration::stripe_event;
 use tailwag_macros::Display;
 use uuid::Uuid;
 
@@ -131,14 +131,13 @@ pub mod checkout {
     use crate::{CartItem, Product, ShopOrder};
     use stripe::CreateCheckoutSessionLineItems;
     use tailwag_orm::{
-        data_manager::{rest_api::Id, traits::DataProvider, PostgresDataProvider},
+        data_manager::{traits::DataProvider, PostgresDataProvider},
         queries::filterable_types::FilterEq,
     };
     use tailwag_web_service::{
         application::http::route::{IntoResponse, Response, ServerData},
         Error,
     };
-    use uuid::Uuid;
 
     #[derive(serde::Serialize, serde::Deserialize, Debug)]
     pub struct CheckoutRequest {

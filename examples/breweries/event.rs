@@ -1,5 +1,4 @@
 use tailwag_macros::derive_magic;
-use uuid::Uuid;
 
 derive_magic! {
     pub struct Event {

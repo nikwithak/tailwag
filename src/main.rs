@@ -12,6 +12,7 @@ fn main() {
     }
 }
 
+#[allow(unused)]
 fn print_help() {
     println!("Usage: tailwag <action> <filepath>");
 }

@@ -12,6 +12,7 @@ derive_magic! {
     }
 }
 
+#[allow(unused)]
 impl FoodTruck {
     pub fn new(name: impl Into<String>) -> Self {
         Self {
