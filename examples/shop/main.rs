@@ -22,10 +22,6 @@ struct ShopApplication;
 impl ShopApplication {
     pub fn new() -> WebServiceBuildResponse {
         tailwag_web_service::application::WebService::builder("My Shop Service")
-            .with_middleware(extract_session)
-            .post_public("/login", gateway::login)
-            .post_public("/logout", gateway::logout)
-            .post_public("/register", gateway::register)
             .with_resource::<Product>() // TODO- public GET with filtering)
             .with_resource::<ShopOrder>() // TODO - public POST, restricted GET (to specific customer, via email)
             .with_resource::<OrderAmount>() // TODO - Needed to make sure the tables get created. TODO: Auto-create all direct dependent tables automatically in the ORM

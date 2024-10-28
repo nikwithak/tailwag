@@ -32,5 +32,6 @@ pub mod prelude {
     pub use super::orm::queries::filterable_types::*;
     pub use super::web::application::http::route::*;
     pub use super::web::application::WebService;
+    pub use super::web::HttpError;
     pub use super::web::HttpResult;
 }
