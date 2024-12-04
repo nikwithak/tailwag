@@ -46,13 +46,6 @@ async-trait = "0.1.73"
 axum = "0.6.20"
 regex = "1.10.3"
 serde = { version = "1.0.202", features = ["derive"] }
-sqlx = { version = "0.7.1", features = [
-    "postgres",
-    "uuid",
-    "chrono",
-    "json",
-    "runtime-tokio-rustls",
-] }
 tokio = { version = "1.32.0", features = ["full"] }
 uuid = "1.4.1"
 async-stripe = { version = "0.34.1", features = ["runtime-tokio-hyper"] }

@@ -18,7 +18,6 @@ use crate::{event::Event, food_truck::FoodTruck};
     Debug,
     serde::Deserialize,
     serde::Serialize,
-    sqlx::FromRow,
     tailwag::macros::GetTableDefinition,
     tailwag::macros::Insertable,
     tailwag::macros::Updateable,

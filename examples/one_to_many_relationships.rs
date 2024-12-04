@@ -7,7 +7,6 @@ use uuid::Uuid;
     Default,
     serde::Deserialize,
     serde::Serialize,
-    sqlx::FromRow,
     tailwag::macros::GetTableDefinition,
     tailwag::macros::Insertable,
     tailwag::macros::Updateable,
@@ -23,6 +22,8 @@ pub struct ParentTable {
     name: String,
     #[no_filter]
     child_table: Vec<ChildTable>,
+    #[no_filter]
+    oto_child: AnotherChild,
 }
 
 #[derive(
@@ -31,7 +32,6 @@ pub struct ParentTable {
     Default,
     serde::Deserialize,
     serde::Serialize,
-    sqlx::FromRow,
     tailwag::macros::GetTableDefinition,
     tailwag::macros::Insertable,
     tailwag::macros::Updateable,
@@ -51,11 +51,18 @@ pub struct ChildTable {
     name: String,
 }
 
+derive_magic! {
+
+pub struct AnotherChild {
+    id: Uuid,
+}
+}
+
 #[tokio::main]
 pub async fn main() {
     WebService::builder("One To Many relationships example service")
         .with_resource::<ParentTable>()
-        .with_resource::<ChildTable>()
+        // .with_resource::<ChildTable>()
         .build_service()
         .run()
         .await
