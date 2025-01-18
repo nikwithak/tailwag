@@ -22,21 +22,13 @@ description = "This is the main crate for the Tailwag suite, an experimental fra
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tailwag_web_service = { version = "0.2.0", git = "https://github.com/nikwithak/tailwag-web-service", branch = "develop", optional = true }
-tailwag_macros = { version = "0.2.1", git = "https://github.com/nikwithak/tailwag_macros", branch = "develop", optional = true }
-tailwag_orm = { version = "0.2.0", git = "https://github.com/nikwithak/tailwag_orm", branch = "develop", optional = true }
-tailwag_forms = { version = "0.2.0", git = "https://github.com/nikwithak/tailwag_forms", branch = "develop", optional = true }
-#tailwag_gui_tools = { version = "0.1.0", git = "https://github.com/nikwithak/tailwag_gui", branch = "develop", optional = true }
-tailwag_utils = { version = "0.1.1", git = "https://github.com/nikwithak/tailwag_utils", branch = "develop", optional = true }
-tailwag_orm_macros = { version = "0.2.0", git = "https://github.com/nikwithak/tailwag_orm", branch = "develop"}
-
-## Local overrides
-#tailwag_web_service = { version = "0.2.0", path = "crates/application", optional = true }
-#tailwag_macros = { version = "0.2.1", path = "crates/macros", optional = true }
-#tailwag_orm = { version = "0.2.0", path = "crates/orm", optional = true }
-#tailwag_forms = { version = "0.2.0", path = "crates/forms", optional = true }
-#tailwag_utils = { version = "0.1.1", path = "crates/utils", optional = true }
-#tailwag_orm_macros = { version = "0.2.0", path = "crates/orm/macros" }
+tailwag_web_service = { version = "0.2.0", path = "crates/application", optional = true }
+tailwag_macros = { version = "0.2.1", path = "crates/macros", optional = true }
+tailwag_orm = { version = "0.2.0", path = "crates/orm", optional = true }
+tailwag_forms = { version = "0.2.0", path = "crates/forms", optional = true }
+# tailwag_gui_tools = { version = "0.1.0", path = "crates/gui", optional = true }
+tailwag_utils = { version = "0.1.1", path = "crates/utils", optional = true }
+tailwag_orm_macros = { version = "0.2.0", path = "crates/orm/macros" }
 
 # tailwag_deployer = { version = "0.1.0", path = "crates/deployer", optional = true }
 # openapi_generator = { version = "0.1.0", path = "crates/openapi_generator", optional = true }
@@ -51,6 +43,7 @@ hurl = "4.2.0"
 
 [dev-dependencies]
 async-trait = "0.1.73"
+axum = "0.6.20"
 regex = "1.10.3"
 serde = { version = "1.0.202", features = ["derive"] }
 tokio = { version = "1.32.0", features = ["full"] }
