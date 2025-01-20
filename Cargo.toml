@@ -22,18 +22,18 @@ description = "This is the main crate for the Tailwag suite, an experimental fra
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [patch.crates-io]
-tailwag_web_service = { git = "https://github.com/nikwithak/tailwag-web-service", branch = "develop", optional = true }
-tailwag_macros = { git = "https://github.com/nikwithak/tailwag_macros", branch = "develop", optional = true }
-tailwag_macro_exports = { git = "https://github.com/nikwithak/tailwag_macros", branch = "develop", optional = true }
-tailwag_macro_logic = { git = "https://github.com/nikwithak/tailwag_macros", branch = "develop", optional = true }
-tailwag_macro_inline = { git = "https://github.com/nikwithak/tailwag_macros", branch = "develop", optional = true }
-tailwag_orm = {  git = "https://github.com/nikwithak/tailwag_orm", branch = "develop", optional = true }
-tailwag_orm_macros = {  git = "https://github.com/nikwithak/tailwag_orm", branch = "develop", optional = true }
-tailwag_orm_macro_logic = {  git = "https://github.com/nikwithak/tailwag_orm", branch = "develop", optional = true }
-tailwag_forms = { git = "https://github.com/nikwithak/tailwag_forms", branch = "develop", optional = true }
-tailwag_forms_macros = { git = "https://github.com/nikwithak/tailwag_forms", branch = "develop", optional = true }
-tailwag_forms_macro_logic = { git = "https://github.com/nikwithak/tailwag_forms", branch = "develop", optional = true }
-tailwag_utils = { git = "https://github.com/nikwithak/tailwag_utils", branch = "develop", optional = true }
+tailwag_web_service = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_macros = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_macro_exports = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_macro_logic = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_macro_inline = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_orm = {  git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_orm_macros = {  git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_orm_macro_logic = {  git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_forms = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_forms_macros = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_forms_macro_logic = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+tailwag_utils = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
 
 
 [dependencies]

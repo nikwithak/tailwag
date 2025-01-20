@@ -61,7 +61,7 @@ Next add our dependencies:
 
 
 > [!TIP]
-> The crates.io crate is not updated frequently. To stay up-to-date with this crate, consider using `cargo add --git https://github.com/nikwithak/tailwag`.
+> The crates.io crate is not updated frequently. To stay up-to-date with this crate, consider using `cargo add --git https://github.com/nikwithak/tailwag --branch develop`.
 
 ```bash
 cargo add tailwag
