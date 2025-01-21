@@ -1,12 +1,8 @@
 [workspace]
 members = [
     "crates/application",
-    # "crates/deployer",
     "crates/forms",
-    # "crates/geometry",
-    # "crates/gui",
     "crates/macros",
-    # "crates/openapi_generator",
     "crates/orm",
     "crates/utils",
 ]
@@ -22,34 +18,26 @@ description = "This is the main crate for the Tailwag suite, an experimental fra
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [patch.crates-io]
-tailwag_web_service = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_macros = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_macro_exports = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_macro_logic = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_macro_inline = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_orm = {  git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_orm_macros = {  git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_orm_macro_logic = {  git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_forms = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_forms_macros = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_forms_macro_logic = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
-tailwag_utils = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+ tailwag_web_service = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+ tailwag_macros = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+ tailwag_orm = {  git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+ tailwag_orm_macros = {  git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+ tailwag_forms = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+ tailwag_forms_macros = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
+ tailwag_utils = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
 
 
 [dependencies]
-tailwag_web_service = { version = "0.2.0", path = "crates/application", optional = true }
-tailwag_macros = { version = "0.2.1", path = "crates/macros", optional = true }
-tailwag_orm = { version = "0.2.0", path = "crates/orm", optional = true }
-tailwag_forms = { version = "0.2.0", path = "crates/forms", optional = true }
-tailwag_utils = { version = "0.1.1", path = "crates/utils", optional = true }
-tailwag_orm_macros = { version = "0.2.0", path = "crates/orm/macros" }
+tailwag_web_service = { version = "0.3.0", path = "crates/application", optional = true }
+tailwag_macros = { version = "0.3.0", path = "crates/macros", optional = true }
+tailwag_orm = { version = "0.3.0", path = "crates/orm", optional = true }
+tailwag_forms = { version = "0.3.0", path = "crates/forms", optional = true }
+tailwag_utils = { version = "0.3.0", path = "crates/utils", optional = true }
+tailwag_orm_macros = { version = "0.3.0", path = "crates/orm/macros", optional = true }
 
-# tailwag_deployer = { version = "0.1.0", path = "crates/deployer", optional = true }
-# openapi_generator = { version = "0.1.0", path = "crates/openapi_generator", optional = true }
 serde_json = "1.0.117"
 uuid = { version = "1.4.1", features = ["v4"] }
 chrono = { version = "0.4.33", features = ["serde"] }
-eframe = { version = "0.23.0", optional = true }
 reqwest = "0.11.24"
 log = "0.4.20"
 hurl = "4.2.0"
@@ -65,13 +53,9 @@ async-stripe = { version = "0.34.1", features = ["runtime-tokio-hyper"] }
 
 [features]
 default = ["all"]
-all = ["web_service", "macros", "orm", "utils", "deployer", "forms"]
+all = ["web_service", "macros", "orm", "utils", "forms"]
 web_service = ["dep:tailwag_web_service"]
 macros = ["dep:tailwag_macros"]
 forms = ["dep:tailwag_forms"]
-orm = ["tailwag_macros?/orm", "tailwag_macros?/default", "dep:tailwag_orm"]
-# gui = ["dep:tailwag_gui_tools"]
-gui = ["dep:eframe"] # GUI features not yet released
+orm = ["tailwag_macros?/orm", "tailwag_macros?/default", "dep:tailwag_orm", "dep:tailwag_orm_macros"]
 utils = ["dep:tailwag_utils"]
-deployer = [] # Deployer features not yet released
-# deployer = ["dep:tailwag_deployer"]

@@ -10,10 +10,41 @@ pub use tailwag_utils as utils;
 #[cfg(feature = "web_service")]
 pub use tailwag_web_service as web;
 
-/// Crate containing all the macro code.
-/// TODO: Move the macros into their respective cargo workspaces, to avoid circular dependency issues (which I currently have to dance around)
+#[macro_export]
+macro_rules! derive_magic {
+    ($i:item) => {
+        #[derive(
+            Clone, // Needed to be able to create an editable version from an Arc<Brewery> without affecting the saved data.
+            Debug,
+            Default,
+            serde::Deserialize,                  // Needed for API de/serialization
+            serde::Serialize,                    // Needed for API de/serialization
+            // sqlx::FromRow,                       // Needed for DB connectivity
+            tailwag::macros::GetTableDefinition, // Creates the data structure needed for the ORM to work.
+            tailwag::macros::Insertable,
+            tailwag::macros::Updateable,
+            tailwag::macros::Deleteable,
+            tailwag::macros::Filterable,
+            tailwag::macros::BuildRoutes, // Creates the functions needed for a REST service (full CRUD)
+            tailwag::macros::Id,
+            // tailwag::macros::AsEguiForm, // Renders the object into an editable form for an egui application.
+            tailwag::macros::Display,
+            tailwag::forms::macros::GetForm,
+        )]
+        $i
+    };
+}
+
+use tailwag_macros;
 #[cfg(feature = "macros")]
-pub use tailwag_macros as macros;
+pub mod macros {
+    pub use super::derive_magic;
+    pub use crate::utils::inline_macros as inline;
+    pub use inline::*;
+    use tailwag_macros;
+    pub use tailwag_macros::*;
+    pub use tailwag_orm_macros::*;
+}
 
 /// Crate containing GUI application logic and common widgets.
 /// TODO: Rename to `egui` to represent the underlying framework
@@ -26,7 +57,7 @@ pub use tailwag_macros as macros;
 pub use tailwag_forms as forms;
 
 pub mod prelude {
-    pub use super::macros::derive_magic;
+    pub use super::derive_magic;
     pub use super::orm::data_manager::traits::WithFilter;
     pub use super::orm::data_manager::PostgresDataProvider;
     pub use super::orm::queries::filterable_types::*;

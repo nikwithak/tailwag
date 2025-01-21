@@ -1,4 +1,4 @@
-use tailwag_macros::derive_magic;
+use tailwag::derive_magic;
 
 derive_magic! {
     pub struct FoodTruck {

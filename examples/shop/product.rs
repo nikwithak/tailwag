@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use stripe::StripeError;
+use tailwag;
 use tailwag_orm::{
     data_manager::{traits::DataProvider, PostgresDataProvider},
     queries::filterable_types::FilterEq,
@@ -10,15 +11,6 @@ use tailwag_web_service::{
     extras::image_upload::{Image, ImageMetadata},
 };
 use uuid::Uuid;
-
-// Needed to simulate  the consolidation library that doesn't actually exist in this scope.
-// TODO: Fix this bloody thing, it's annoying.
-mod tailwag {
-    pub use tailwag_forms as forms;
-    pub use tailwag_macros as macros;
-    pub use tailwag_orm as orm;
-    pub use tailwag_web_service as web;
-}
 
 #[derive(
     Clone,
