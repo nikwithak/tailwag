@@ -10,20 +10,15 @@ Postgres datastore for datatypes composed of primitives, timestamps, and UUIDs.
 It does currently support joins or nested data structures, except for limited
 One-to-one data structure support.
 
-## Project Status: Experimental
+## Project Status: Usable [Experimental]
 
 This project is being actively developed in my free time, although it is still
-in early stages. It currently has a large number of `unwrap()` calls, `TODO`
-comments, and unoptimized code. I've made an effort to document known technical
-debt as comments in the code. The macros in particular are a bit funky (see
-FAQ - "What's up with the macros?").
+in early stages. I've made an effort to document known technical
+debt as comments in the code. 
 
 I've made made some recent improvements to the error handling and hope soon to
 eliminate all `.unwrap()` calls, which currently cause unexpected crashes in
 some cases.
-
-It is also currently single-threaded, only able to handle one request at a time,
-which is due to the WIP status of the underlying HTTP implementation.
 
 ## Getting Started
 
@@ -38,6 +33,9 @@ CRUD operations for the `Item` struct:
 > ```
 > docker run --name postgres-dev -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -p 5432:5432 postgres
 > ```
+
+
+You can also fork the [tailwag_application_template](https://github.com/nikwithak/tailwag_application_template) repository to get a simple service.
 
 #### Minimal Working Example
 
@@ -234,46 +232,6 @@ application:
       to override with custom behavior through trait implementations. In
       general, I have tried to avoid procedural (non-derive) macros that perform
       too much magic.
-
-### FAQ
-
-##### Q: Why not use existing crates like `axum`, `actix-web`, `diesel`, `yew` or `<other_library>`?
-
-A: I am a strong believer in practice as a productivity tool. I started these
-libraries as a self-study learning exercise, and over time they've grown into
-something more useful.
-
-##### Q: What's up with the macro crates?
-
-A: The first macros I wrote were a mess of spaghetti code, and I've slowly been
-simplifying how I write them to make them more readable / maintainable. tl;dr:
-They're just a mess right now.
-
-Currently I have two macro sub-crates for the crates that have custom macros,
-one for the exports and one for the logic. I initially thought this would make
-it easier to reuse and test the macros, given the compiler-enforced requirement
-that `proc_macro` exports be an entirely separate crate - but the reality is
-that I just created an annoying hurdle to jump around when changing the macros.
-I will be refactoring and simplify those macros in the future.
-
-##### Q: Why were certain decisions made?
-
-A: Sometimes the reason a decision made is just because it's what made sense at
-the time. There are some parts of the framework that I've rebuild a couple of
-times, some I've been happy with the way I did it at first, and others that I
-wish I had done differently but they are too baked in at this point to change
-easily. Such is the struggle of all software projects.
-
-##### Q: I have another question.
-
-A: Please [file an issue](https://github.com/nikwithak/tailwag/issues/new) or
-[send me an email](mailto:nik@nikgilmore.com)!
-
-##### Can I use Tailwag in Production?
-
-A: You are free to use Tailwag however you see fit, although it has some known
-limitations at this time. It is provided "as is", without warranty of any kind.
-If you use it in a Production application, make sure you test extensively.
 
 ## LICENSE
 
