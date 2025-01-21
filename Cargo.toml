@@ -4,12 +4,14 @@ members = [
     "crates/forms",
     "crates/macros",
     "crates/orm",
+    "crates/orm/macros",
+    "crates/forms/macros",
     "crates/utils",
 ]
 
 [package]
 name = "tailwag"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/nikwithak/tailwag"
@@ -53,7 +55,7 @@ async-stripe = { version = "0.34.1", features = ["runtime-tokio-hyper"] }
 
 [features]
 default = ["all"]
-all = ["web_service", "macros", "orm", "utils", "forms"]
+all = ["web_service", "macros", "orm", "utils",  "forms"]
 web_service = ["dep:tailwag_web_service"]
 macros = ["dep:tailwag_macros"]
 forms = ["dep:tailwag_forms"]
