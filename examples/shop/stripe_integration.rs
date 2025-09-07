@@ -4,7 +4,7 @@ use tailwag_orm::{
     data_manager::{rest_api::Id, traits::DataProvider, PostgresDataProvider},
     queries::filterable_types::FilterEq,
 };
-use tailwag_utils::email::sendgrid::SendGridEmailClient;
+use tailwag_utils::email::{EmailClient, EmailProvider};
 use tailwag_web_service::{
     application::http::route::{IntoResponse, Request, Response},
     tasks::TaskScheduler,
@@ -125,7 +125,7 @@ async fn process_checkout_session_completed_event(
     // Send emails if it hasn't already been sent
     if !order.confirmation_email_sent {
         // TODO: Externalize content
-        let sendgrid_client = SendGridEmailClient::from_env()?;
+        let sendgrid_client = EmailClient::from_env()?;
         sendgrid_client
             .send_email(
                 // TODO [HARDCODING] [CONFIG]: Read this from config
@@ -138,6 +138,7 @@ Thanks for ordering.
 
 Wof wof!
 "#,
+                None,
             )
             .await?;
         order.confirmation_email_sent = true;
@@ -148,6 +149,7 @@ Wof wof!
                 "nik@tonguetail.com",
                 "You have a new order!!",
                 "Visit https://beta.scrapplique.com/manage/orders to view it",
+                None,
             )
             .await
         {
