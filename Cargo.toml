@@ -29,6 +29,8 @@ description = "This is the main crate for the Tailwag suite, an experimental fra
  tailwag_utils = { git = "https://github.com/nikwithak/tailwag", branch = "develop", optional = true }
 
 
+
+
 [dependencies]
 tailwag_web_service = { version = "0.3.0", path = "crates/application", optional = true }
 tailwag_macros = { version = "0.3.0", path = "crates/macros", optional = true }
