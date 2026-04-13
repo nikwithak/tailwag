@@ -35,6 +35,7 @@ macro_rules! derive_magic {
     };
 }
 
+#[allow(unused)]
 use tailwag_macros;
 #[cfg(feature = "macros")]
 pub mod macros {
