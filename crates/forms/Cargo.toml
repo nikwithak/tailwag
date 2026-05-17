@@ -1,0 +1,20 @@
+[package]
+name = "tailwag_forms"
+version = "0.3.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/nikwithak/tailwag_forms"
+description = "The form definition crate for the tailwag suite. See the tailwag crate for full details."
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# [workspace]
+# members = [
+#     "macros",
+# ]
+
+[dependencies]
+serde = { version = "1.0.188", features = ["derive"] }
+serde_json = "1.0.113"
+tailwag_forms_macros = { version = "0.3.0", path = "macros" }
+tailwag_utils = { version = "0.3.0", path = "../utils" }
