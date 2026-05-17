@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./tailwag_macro_logic/Cargo.toml"
+    ]
+}
