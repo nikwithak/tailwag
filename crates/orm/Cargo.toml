@@ -1,0 +1,33 @@
+[package]
+name = "tailwag_orm"
+version = "0.3.0"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/nikwithak/tailwag_orm"
+edition = "2021"
+readme = "README.md"
+description = "An ORM for building Postgres schemas and data access with a Manager pattern, backed by sqlx."
+
+# [workspace]
+# members = [
+#     "macros",
+#     "macros/logic",
+# ]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+async-trait = "0.1.74"
+chrono = { version = "0.4.26", features = ["serde"] }
+futures = "0.3.28"
+json = "0.12.4"
+log = "0.4.20"
+quote = "1.0.29"
+reqwest = { version = "0.11.22", features = ["json"] }
+serde = { version = "1.0.183", features = ["serde_derive"] }
+serde_json = "1.0.108"
+sqlx = { version = "0.8.2", features = [ "postgres", "uuid", "chrono", "json", "runtime-tokio-rustls", ] }
+uuid = { version = "1.4.0", features = ["v4", "serde"] }
+
+[features]
+default = ["sql_json"]
+sql_json = []
