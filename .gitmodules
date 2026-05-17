@@ -1,9 +1,6 @@
 [submodule "crates/auth"]
 	path = crates/auth
 	url = https://www.github.com/nikwithak/tailwag_auth.git
-[submodule "crates/macros"]
-	path = crates/macros
-	url = https://www.github.com/nikwithak/tailwag_macros.git
 [submodule "crates/orm"]
 	path = crates/orm
 	url = https://www.github.com/nikwithak/tailwag_orm.git
