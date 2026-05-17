@@ -1,0 +1,74 @@
+[package]
+name = "tailwag_web_service"
+version = "0.3.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+description = "A library for quickly generating web services, relying on the tailwag_orm crate. A component of the tailwag crate."
+#readme = "README.md"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+
+[dependencies]
+tailwag_orm = { version = "0.3.0", path = "../orm" }
+tailwag_orm_macros = { version = "0.3.0", path = "../orm/macros" }
+tailwag_utils = { version = "0.3.0", path = "../utils" }
+tailwag_macros = { version = "0.3.0", path = "../macros" }
+tailwag_forms = { version = "0.3.0", path = "../forms" }
+
+
+# Error Handling Ergonomics
+anyhow = "1.0.72"
+thiserror = "1.0.48"
+
+# Logging
+env_logger = "0.10.0"
+log = "0.4.20"
+dotenv = "0.15.0"
+
+# Useful Types
+chrono = { version = "0.4.26", features = ["serde"] }
+uuid = { version = "1.4.1", features = ["v4", "serde"] }
+
+# Serialization
+serde = { version = "1.0.174", features = ["derive"] }
+serde_json = "1.0.103"
+regex = "1.9.3"
+
+# Web Accessibility
+reqwest = { version = "0.11.18", features = ["tokio-rustls", "serde_json"] }
+
+# Web Frameworks (Pick one)
+# axum = { version = "0.6.19", features = ["macros"] }
+# actix-web = { version = "4.4.0", features = ["rustls"] }
+
+# Threading / Async
+# hyper = "0.14.27"
+tokio = { version = "1.29.1", features = [
+    "macros",
+    "rt-multi-thread",
+    "tracing",
+] }
+tracing = "0.1.37"
+tracing-subscriber = "0.3.17"
+
+# Database (Postgres) - Not sure it's worth supporting non-postgres (relational) DBs? Maybe sqlite
+sqlx = { version = "0.8.2", features = [ "postgres", "uuid", "chrono", "json", "runtime-tokio-rustls", ] }
+jsonwebtoken = "9.2.0"
+argon2 = "0.5.3"
+futures = "0.3.30"
+pulldown-cmark = "0.10.2"
+urlencoding = "2.1.3"
+rand = "0.8.5"
+totp-rs = { version = "5.7.1", features = ["gen_secret"] }
+
+[features]
+default = ["development", "tasks"]
+axum = []
+release = []
+development = []
+tasks = []
+
+[dev-dependencies]
+async-stripe = { version = "0.34.1", features = ["runtime-tokio-hyper"] }
+hurl = "7.0.0"
