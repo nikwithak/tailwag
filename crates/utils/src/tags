@@ -1,0 +1,9 @@
+!_TAG_FILE_SORTED	2	/0=unsorted, 1=sorted, 2=foldcase/
+data_strutures	/home/nik/code/frameworks/tailwag/crates/utils/src/lib.rs	/^pub mod data_strutures;$/;"	n	language:Rust
+files	/home/nik/code/frameworks/tailwag/crates/utils/src/lib.rs	/^pub mod files;$/;"	n	language:Rust
+macro_utils	/home/nik/code/frameworks/tailwag/crates/utils/src/lib.rs	/^pub mod macro_utils;$/;"	n	language:Rust
+maths	/home/nik/code/frameworks/tailwag/crates/utils/src/lib.rs	/^pub mod maths;$/;"	n	language:Rust
+serde_regex	/home/nik/code/frameworks/tailwag/crates/utils/src/lib.rs	/^pub mod serde_regex;$/;"	n	language:Rust
+strings	/home/nik/code/frameworks/tailwag/crates/utils/src/lib.rs	/^pub mod strings;$/;"	n	language:Rust
+traits	/home/nik/code/frameworks/tailwag/crates/utils/src/lib.rs	/^pub mod traits;$/;"	n	language:Rust
+types	/home/nik/code/frameworks/tailwag/crates/utils/src/lib.rs	/^pub mod types;$/;"	n	language:Rust

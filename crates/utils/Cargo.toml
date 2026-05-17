@@ -1,0 +1,24 @@
+[package]
+name = "tailwag_utils"
+version = "0.3.0"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/nikwithak/tailwag_utils"
+edition = "2021"
+readme = "README.MD"
+description = "A collection of assorted utility functions / traits. Part of the tailwag stack."
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+log = { version = "0.4.20", features = ["serde"] }
+regex = "1.9.5"
+serde = { version = "1.0.202", features = ["derive"] }
+syn = "2.0.48"
+serde_json = {version = "1.0.117", optional = true}
+reqwest ={version =  "0.12.4", optional = true}
+
+[features]
+default = ["sendgrid", "smtp2go"]
+sendgrid = ["dep:reqwest","dep:serde_json"]
+smtp2go = ["dep:reqwest","dep:serde_json"]
+experimental = []
