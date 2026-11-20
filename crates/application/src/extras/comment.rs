@@ -32,7 +32,6 @@ mod tailwag {
 #[derive(
     Clone,
     Debug,
-    Default,
     serde::Deserialize,
     serde::Serialize,
     tailwag_orm_macros::GetTableDefinition,
@@ -56,9 +55,14 @@ pub struct Comment {
     #[create_ignore]
     pub(crate) track_id: uuid::Uuid,
     #[create_ignore]
-    pub(crate) create_date: chrono::NaiveDateTime,
+    #[serde(with = "tailwag_orm::pg_ts")]
+    pub(crate) create_date: time::PrimitiveDateTime,
     #[create_ignore]
-    pub(crate) last_modified_date: Option<chrono::NaiveDateTime>,
+    #[serde(
+        serialize_with = "tailwag_orm::pg_ts::opt_serialize",
+        deserialize_with = "tailwag_orm::pg_ts::opt"
+    )]
+    pub(crate) last_modified_date: Option<time::PrimitiveDateTime>,
     #[create_ignore]
     pub(crate) parent_comment_id: Option<uuid::Uuid>,
 }
@@ -95,7 +99,8 @@ where
         _ => crate::HttpError::unsupported_media_type()?,
     };
     let mut comment: Comment = comment.into();
-    comment.create_date = chrono::Utc::now().naive_utc();
+    let now_utc = time::OffsetDateTime::now_utc();
+    comment.create_date = time::PrimitiveDateTime::new(now_utc.date(), now_utc.time());
     comment.created_by = user;
     comment.track_id = id;
 

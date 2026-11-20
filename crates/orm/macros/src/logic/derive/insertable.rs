@@ -99,7 +99,7 @@ fn build_create_request(input: &DeriveInput) -> (Ident, TokenStream) {
             _ => true,
         }
     )
-    .map(|field| &field.ident);
+    .map(|field| &field.ident).collect::<Vec<_>>();
 
     let vec_fields = passthrough_fields.clone().filter(
         |field|match get_type_from_field(field) {
@@ -115,16 +115,53 @@ fn build_create_request(input: &DeriveInput) -> (Ident, TokenStream) {
         }
     
     // );
-    ).map(|field|syn::parse_str::<TokenStream>(&field.get_qualified_path_for_option().to_snake_case()).expect("Failed to parse path")); 
-    let vec_field_names = vec_fields .map(|field| &field.ident);
+    ).map(|field|syn::parse_str::<TokenStream>(&field.get_qualified_path_for_option().to_snake_case()).expect("Failed to parse path")).collect::<Vec<_>>(); 
+    let vec_field_names = vec_fields .map(|field| &field.ident).collect::<Vec<_>>();
+
+    // `time::PrimitiveDateTime` has no `Default` impl, so fall back to the local `OrDefault` trait
+    // for Timestamp-typed passthrough fields (mirrors chrono's `NaiveDateTime` which had `Default`).
+    let field_default_tokens = passthrough_fields.clone().filter(
+        |field|match get_type_from_field(field) {
+            tailwag_orm::data_definition::table::DatabaseColumnType::OneToMany(_, _) |
+            tailwag_orm::data_definition::table::DatabaseColumnType::ManyToMany(_, _) => false,
+            tailwag_orm::data_definition::table::DatabaseColumnType::OneToOne {..} if field.is_option() => false,
+            _ => true,
+        }
+    )
+    .map(|field| {
+        let field_name = &field.ident;
+        let default = match get_type_from_field(field) {
+            tailwag_orm::data_definition::table::DatabaseColumnType::Timestamp => quote!(tailwag::orm::OrDefault::or_default()),
+            _ => quote!(Default::default()),
+        };
+        quote!(#field_name: #default,)
+    });
 
     // Need to default to any db_ignored fields
-    let ignored_fields = fields.named.iter().filter(|field| field.get_attribute("db_ignore").is_some() || field.get_attribute("create_ignore").is_some()).map(|field|&field.ident);
+    let ignored_field_defaults = fields.named.iter()
+        .filter(|field| field.get_attribute("db_ignore").is_some() || field.get_attribute("create_ignore").is_some())
+        .map(|field| {
+            let field_name = &field.ident;
+            let default = match get_type_from_field(field) {
+                tailwag_orm::data_definition::table::DatabaseColumnType::Timestamp => quote!(tailwag::orm::OrDefault::or_default()),
+                _ => quote!(Default::default()),
+            };
+            quote!(#field_name: #default,)
+        });
 
     (request_ident.clone(), quote!(
-        #[derive(Default, serde::Deserialize, serde::Serialize)]
+        #[derive(serde::Deserialize, serde::Serialize)]
         pub struct #request_ident {
             #(#field_tokens)*
+        }
+        impl Default for #request_ident {
+            fn default() -> Self {
+                Self {
+                    #(#field_default_tokens)*
+                    #(#vec_field_names: Default::default(),)*
+                    #(#option_field_names: Default::default(),)*
+                }
+            }
         }
         impl From<#request_ident> for #type_ident {
             fn from(val: #request_ident) -> Self {
@@ -133,7 +170,7 @@ fn build_create_request(input: &DeriveInput) -> (Ident, TokenStream) {
                     #(#field_names: val.#field_names.into(),)*
                     #(#vec_field_names: val.#vec_field_names.into_iter().map(<_ as From<_>>::from).collect(),)*
                     #(#option_field_names: val.#option_field_names.map(<_ as From<_>>::from),)*
-                    #(#ignored_fields: Default::default(),)*
+                    #(#ignored_field_defaults)*
                 }
             }
         }

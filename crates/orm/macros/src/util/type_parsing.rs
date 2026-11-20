@@ -90,7 +90,7 @@ pub fn extract_option_type(field: &Field) -> String {
 //                 "bool" => DatabaseColumnType::Boolean,
 //                 "u32" | "u64" | "i32" | "i64" | "usize" | "isize" => DatabaseColumnType::Int,
 //                 "f32" | "f64" | "fsize" => DatabaseColumnType::Float,
-//                 "chrono::_" => DatabaseColumnType::Timestamp, // TODO
+//                 "time::_" => DatabaseColumnType::Timestamp, // TODO
 //                 "uuid::Uuid" | "Uuid" => DatabaseColumnType::Uuid,
 //                 _ => {
 //                     // TODO: Impl for joinable tables
@@ -134,7 +134,7 @@ pub fn extract_option_type(field: &Field) -> String {
 //                 "bool" => DatabaseColumnType::Boolean,
 //                 "u32" | "u64" | "i32" | "i64" | "usize" | "isize" => DatabaseColumnType::Int,
 //                 "f32" | "f64" | "fsize" => DatabaseColumnType::Float,
-//                 "chrono::_" => DatabaseColumnType::Timestamp, // TODO
+//                 "time::_" => DatabaseColumnType::Timestamp, // TODO
 //                 "uuid::Uuid" | "Uuid" => DatabaseColumnType::Uuid,
 //                 _ => {
 //                     // TODO: Impl for joinable tables

@@ -58,6 +58,14 @@ pub struct AnotherChild {
 }
 }
 
+impl Default for AnotherChild {
+    fn default() -> Self {
+        Self {
+            id: uuid::Uuid::default(),
+        }
+    }
+}
+
 #[tokio::main]
 pub async fn main() {
     WebService::builder("One To Many relationships example service")

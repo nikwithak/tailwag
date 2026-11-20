@@ -1,5 +1,5 @@
 use axum::http::{HeaderMap, HeaderValue};
-use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, NaiveTime};
+use time::{Date, Month, OffsetDateTime, PrimitiveDateTime, Time};
 use reqwest::{Client, Error};
 use tailwag_orm::{
     data_definition::exp_data_system::DataSystem,
@@ -113,7 +113,7 @@ impl Brewery {
         let regex = regex::Regex::new(regex_str).expect("Regex failed");
         let captures = regex.captures_iter(&response);
 
-        let now = Local::now();
+        let now = OffsetDateTime::now_utc();
         for capture in captures {
             let month =
                 capture.name("month").and_then(|s| s.as_str().parse::<u32>().ok()).unwrap_or(13);
@@ -138,8 +138,10 @@ impl Brewery {
             if capture.name("am_or_pm").map(|s| s.as_str().to_lowercase().eq("pm")).is_some() {
                 start_time += 12;
             }
-            let naive_date = NaiveDate::from_ymd_opt(year, month, day);
-            let naive_time = NaiveTime::from_hms_opt(start_time, 0, 0);
+            let naive_date = Month::try_from(month as u8)
+                .ok()
+                .and_then(|month| Date::from_calendar_date(year, month, day as u8).ok());
+            let naive_time = Time::from_hms(start_time as u8, 0, 0).ok();
             let (Some(naive_date), Some(naive_time)) = (naive_date, naive_time) else {
                 log::error!(
                     r#"Failed to extract datetime from capture """{:?}""" using regex """{}""""#,
@@ -148,7 +150,7 @@ impl Brewery {
                 );
                 continue; // TODO: Refactor to avoid continue control flows
             };
-            let event_start_time = NaiveDateTime::new(naive_date, naive_time);
+            let event_start_time = PrimitiveDateTime::new(naive_date, naive_time);
 
             let Some(food_truck_name) = capture.name("food_truck_name").map(|s| s.as_str()) else {
                 continue; // TODO: Refactor to avoid continue control flows

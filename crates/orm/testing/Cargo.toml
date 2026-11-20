@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 derive_dataprovider_logic = { version = "0.1.0", path = ".." }
-sqlx = { version = "0.7.1", features = ["runtime-tokio", "postgres", "uuid", "chrono"] }
+sqlx = { version = "0.7.1", features = ["runtime-tokio", "postgres", "uuid", "time"] }
 tokio = { version = "1.29.1", features = ["macros", "full"] }

@@ -15,7 +15,6 @@ mod tailwag {
 #[derive(
     Clone,
     Debug,
-    Default,
     serde::Deserialize,
     serde::Serialize,
     // sqlx::FromRow,
@@ -32,12 +31,24 @@ mod tailwag {
 #[views(display_event, css, form, banner)]
 pub struct Event {
     id: Uuid,
-    start_time: chrono::NaiveDateTime,
-    // end_time: chrono::NaiveDateTime,
+    start_time: time::PrimitiveDateTime,
+    // end_time: time::PrimitiveDateTime,
     name: String,
     #[no_filter]
     description: Option<String>,
     // attendees: Vec<String>,
+}
+
+// `time::PrimitiveDateTime` has no `Default` impl, so derive the default manually.
+impl Default for Event {
+    fn default() -> Self {
+        Self {
+            id: Default::default(),
+            start_time: tailwag::orm::OrDefault::or_default(),
+            name: Default::default(),
+            description: Default::default(),
+        }
+    }
 }
 
 #[tokio::main]

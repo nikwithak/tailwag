@@ -5,7 +5,7 @@ use std::{
     sync::mpsc::{channel, Receiver, Sender},
 };
 
-use chrono::NaiveDateTime;
+use time::{OffsetDateTime, PrimitiveDateTime};
 use futures::Future;
 use serde::Serialize;
 use uuid::Uuid;
@@ -34,7 +34,7 @@ impl<T: ToString> From<T> for TaskError {
 pub struct TaskRequest {
     id: uuid::Uuid,
     #[allow(unused)]
-    create_date: NaiveDateTime,
+    create_date: PrimitiveDateTime,
     // status: TaskStatus,
     type_id: TypeId,
     data: Vec<u8>,
@@ -46,7 +46,10 @@ impl TaskRequest {
     pub fn new<T: Serialize + 'static>(data: T) -> Self {
         Self {
             id: Uuid::new_v4(),
-            create_date: chrono::Utc::now().naive_utc(),
+            create_date: PrimitiveDateTime::new(
+                OffsetDateTime::now_utc().date(),
+                OffsetDateTime::now_utc().time(),
+            ),
             type_id: TypeId::of::<T>(), // TODO: Not a reliable way to pass this around. Need to enum-ize it, or otherwise use a static representation.
             data: serde_json::to_vec(&data).unwrap(),
         }

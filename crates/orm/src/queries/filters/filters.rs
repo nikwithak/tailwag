@@ -12,7 +12,7 @@ pub enum FilterComparisonParam {
     Integer(i64),
     Float(f64),
     Bool(bool),
-    Timestamp(chrono::NaiveDateTime),
+    Timestamp(time::PrimitiveDateTime),
     Null,
 }
 

@@ -106,8 +106,8 @@ impl_numeric_type!(f64: Float);
 // impl_numeric_type!(i16: Integer);
 // impl_numeric_type!(i8: Integer);
 // impl_numeric_type!(f32: Float);
-typetype! {chrono::NaiveDateTime}
-impl_filter_for!(chrono::NaiveDateTime: chrono::NaiveDateTime, new_timestamp, Timestamp, FilterEq eq:Equal, ne:NotEqual);
+typetype! {time::PrimitiveDateTime}
+impl_filter_for!(time::PrimitiveDateTime: time::PrimitiveDateTime, new_timestamp, Timestamp, FilterEq eq:Equal, ne:NotEqual);
 
 // impl<T> TypeFilter for Vec<T> where T: TypeFilter {}
 // impl<T> TypeFilter for Option<T> where T: TypeFilter {}

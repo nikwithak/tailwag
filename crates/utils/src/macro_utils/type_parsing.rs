@@ -140,8 +140,8 @@ pub fn get_type_from_field(field: &Field) -> BaseType {
                     "bool" => BaseType::Boolean,
                     "u32" | "u64" | "i32" | "i64" | "usize" | "isize" => BaseType::Int,
                     "f32" | "f64" | "fsize" => BaseType::Float,
-                    // "chrono::DateTime" | "DateTime" => BaseType::Timestamp, // TODO: This doesn't currently work (DateTime is TIMESTAMPTZ not TIMESTAMP)
-                    "chrono::NaiveDateTime" | "NaiveDateTime" => BaseType::Timestamp,
+                    // "time::OffsetDateTime" | "OffsetDateTime" => BaseType::Timestamp, // TODO: This doesn't currently work (DateTime is TIMESTAMPTZ not TIMESTAMP)
+                    "time::PrimitiveDateTime" | "PrimitiveDateTime" => BaseType::Timestamp,
                     "uuid::Uuid" | "Uuid" => BaseType::Uuid,
                     // _ => todo!("Unknown type"),
                     _ => BaseType::Other,

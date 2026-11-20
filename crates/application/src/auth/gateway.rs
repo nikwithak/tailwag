@@ -15,7 +15,7 @@ use argon2::{
     password_hash::{rand_core::OsRng, SaltString},
     Argon2, PasswordHasher, PasswordVerifier,
 };
-use chrono::Utc;
+use time::{OffsetDateTime, PrimitiveDateTime};
 use serde::{Deserialize, Serialize};
 use tailwag_macros::BuildRoutes;
 use tailwag_orm::data_manager::{traits::DataProvider, PostgresDataProvider};
@@ -166,7 +166,6 @@ impl tailwag::orm::data_manager::rest_api::Id for AppUser {
 #[derive(
     Clone, // Needed to be able to create an editable version from an Arc<Brewery> without affecting the saved data.
     Debug,
-    Default,
     Deserialize, // Needed for API de/serialization
     Serialize,   // Needed for API de/serialization
     // sqlx::FromRow, // Needed for DB connectivity
@@ -185,9 +184,24 @@ pub struct Session {
     #[ref_only]
     #[no_filter]
     account: AppUser,
-    start_time: chrono::NaiveDateTime,
-    expiry_time: chrono::NaiveDateTime,
+    #[serde(with = "tailwag_orm::pg_ts")]
+    start_time: PrimitiveDateTime,
+    #[serde(with = "tailwag_orm::pg_ts")]
+    expiry_time: PrimitiveDateTime,
 }
+
+// `time::PrimitiveDateTime` has no `Default` impl, so derive the default manually.
+impl Default for Session {
+    fn default() -> Self {
+        Self {
+            id: uuid::Uuid::default(),
+            account: Default::default(),
+            start_time: tailwag::orm::OrDefault::or_default(),
+            expiry_time: tailwag::orm::OrDefault::or_default(),
+        }
+    }
+}
+
 impl tailwag::orm::data_manager::rest_api::Id for Session {
     fn id(&self) -> &uuid::Uuid {
         &self.id
@@ -349,8 +363,14 @@ pub async fn login(
     let Ok(new_session) = sessions
         .create(SessionCreateRequest {
             account,
-            start_time: Utc::now().naive_utc(),
-            expiry_time: Utc::now().naive_utc() + Duration::from_millis(SESSION_LENGTH_MS),
+            start_time: PrimitiveDateTime::new(
+                OffsetDateTime::now_utc().date(),
+                OffsetDateTime::now_utc().time(),
+            ),
+            expiry_time: PrimitiveDateTime::new(
+                OffsetDateTime::now_utc().date(),
+                OffsetDateTime::now_utc().time(),
+            ) + Duration::from_millis(SESSION_LENGTH_MS),
         })
         .await
     else {
@@ -361,7 +381,7 @@ pub async fn login(
         &Default::default(),
         &JwtClaims {
             session_id: new_session.id,
-            exp: new_session.expiry_time.and_utc().timestamp() as usize,
+            exp: new_session.expiry_time.assume_utc().unix_timestamp() as usize,
         },
         &jsonwebtoken::EncodingKey::from_secret(jwt_secret.0.as_ref()),
     )

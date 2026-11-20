@@ -8,8 +8,21 @@ async fn main() {
             id: uuid::Uuid,
             title: String,
             description: String,
-            due_date: chrono::NaiveDateTime,
+            due_date: time::PrimitiveDateTime,
             completed: bool,
+        }
+    }
+
+    // `time::PrimitiveDateTime` has no `Default` impl, so derive the default manually.
+    impl Default for Todo {
+        fn default() -> Self {
+            Self {
+                id: uuid::Uuid::default(),
+                title: String::default(),
+                description: String::default(),
+                due_date: tailwag::orm::OrDefault::or_default(),
+                completed: false,
+            }
         }
     }
 

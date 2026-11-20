@@ -27,7 +27,7 @@ pub enum ColumnValue {
     Int(i64),                         // INT
     Float(f64),                       // FLOAT
     String(String),                   // VARCHAR or TEXT
-    Timestamp(chrono::NaiveDateTime), // TIMESTAMP
+    Timestamp(time::PrimitiveDateTime), // TIMESTAMP
     Uuid(uuid::Uuid),                 // UUID
     Json(String),                     // JSONB
     OneToMany {

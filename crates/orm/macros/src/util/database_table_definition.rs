@@ -183,8 +183,8 @@ pub fn get_type_from_field(field: &Field) -> DatabaseColumnType {
                     "bool" => DatabaseColumnType::Boolean,
                     "u32" | "u64" | "i32" | "i64" | "usize" | "isize" => DatabaseColumnType::Int,
                     "f32" | "f64" | "fsize" => DatabaseColumnType::Float,
-                    // "chrono::DateTime" | "DateTime" => DatabaseColumnType::Timestamp, // TODO: This doesn't currently work (DateTime is TIMESTAMPTZ not TIMESTAMP)
-                    "chrono::NaiveDateTime" | "NaiveDateTime" => DatabaseColumnType::Timestamp,
+                    // "time::OffsetDateTime" | "OffsetDateTime" => DatabaseColumnType::Timestamp, // TODO: This doesn't currently work (DateTime is TIMESTAMPTZ not TIMESTAMP)
+                    "time::PrimitiveDateTime" | "PrimitiveDateTime" => DatabaseColumnType::Timestamp,
                     "uuid::Uuid" | "Uuid" => DatabaseColumnType::Uuid,
                     // If it's a Vec, then we want to do one-to-many (does not account for Vec of primitives)
                     "std::vec::Vec" | "vec::Vec" | "alloc::Vec" | "Vec" => {

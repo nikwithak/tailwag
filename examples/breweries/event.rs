@@ -7,21 +7,22 @@ derive_magic! {
         pub name: String,
         #[no_filter]
         pub description: Option<String>,
-        pub start_time: chrono::NaiveDateTime,
+        pub start_time: time::PrimitiveDateTime,
         pub food_truck_id: uuid::Uuid,
         pub brewery_id: uuid::Uuid,
     }
 }
 
-// impl Default for Event {
-//     fn default() -> Self {
-//         Self {
-//             id: uuid::Uuid::new_v4(),
-//             name: "New Brewery".to_string(),
-//             description: None,
-//             start_time: chrono::Utc::now().naive_utc(),
-//             food_truck_id: uuid::Uuid::default(),
-//             brewery_id: uuid::Uuid::default(),
-//         }
-//     }
-// }
+// `time::PrimitiveDateTime` has no `Default` impl, so derive the default manually.
+impl Default for Event {
+    fn default() -> Self {
+        Self {
+            id: uuid::Uuid::new_v4(),
+            name: "New Brewery".to_string(),
+            description: None,
+            start_time: tailwag::orm::OrDefault::or_default(),
+            food_truck_id: uuid::Uuid::default(),
+            brewery_id: uuid::Uuid::default(),
+        }
+    }
+}

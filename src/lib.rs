@@ -16,7 +16,6 @@ macro_rules! derive_magic {
         #[derive(
             Clone, // Needed to be able to create an editable version from an Arc<Brewery> without affecting the saved data.
             Debug,
-            Default,
             serde::Deserialize,                  // Needed for API de/serialization
             serde::Serialize,                    // Needed for API de/serialization
             // sqlx::FromRow,                       // Needed for DB connectivity

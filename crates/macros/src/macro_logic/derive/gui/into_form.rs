@@ -44,7 +44,7 @@ fn build_form_items(input: &DeriveInput) -> Vec<TokenStream> {
                 },
                 "u32" | "u64" | "i32" | "i64" | "usize" | "isize" => todo!(),
                 "f32" | "f64" | "fsize" => todo!(),
-                "chrono::_" => todo!(),
+                "time::_" => todo!(),
                 _ => {
                     quote!(.with_immutable_text("not ready"))
                 },

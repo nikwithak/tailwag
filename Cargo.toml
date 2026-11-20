@@ -41,7 +41,7 @@ tailwag_orm_macros = { version = "0.3.0", path = "crates/orm/macros", optional =
 
 serde_json = "1.0.117"
 uuid = { version = "1.4.1", features = ["v4"] }
-chrono = { version = "0.4.33", features = ["serde"] }
+time = { version = "0.3", features = ["serde"] }
 reqwest = "0.11.24"
 log = "0.4.20"
 

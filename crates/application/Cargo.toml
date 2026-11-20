@@ -27,7 +27,7 @@ log = "0.4.20"
 dotenv = "0.15.0"
 
 # Useful Types
-chrono = { version = "0.4.26", features = ["serde"] }
+time = { version = "0.3", features = ["serde"] }
 uuid = { version = "1.4.1", features = ["v4", "serde"] }
 
 # Serialization
@@ -53,7 +53,7 @@ tracing = "0.1.37"
 tracing-subscriber = "0.3.17"
 
 # Database (Postgres) - Not sure it's worth supporting non-postgres (relational) DBs? Maybe sqlite
-sqlx = { version = "0.8.2", features = [ "postgres", "uuid", "chrono", "json", "runtime-tokio-rustls", ] }
+sqlx = { version = "0.8.2", features = [ "postgres", "uuid", "time", "json", "runtime-tokio-rustls", ] }
 jsonwebtoken = "9.2.0"
 argon2 = "0.5.3"
 futures = "0.3.30"

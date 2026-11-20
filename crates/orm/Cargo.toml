@@ -17,7 +17,7 @@ description = "An ORM for building Postgres schemas and data access with a Manag
 
 [dependencies]
 async-trait = "0.1.74"
-chrono = { version = "0.4.26", features = ["serde"] }
+time = { version = "0.3", features = ["serde"] }
 futures = "0.3.28"
 json = "0.12.4"
 log = "0.4.20"
@@ -25,7 +25,7 @@ quote = "1.0.29"
 reqwest = { version = "0.11.22", features = ["json"] }
 serde = { version = "1.0.183", features = ["serde_derive"] }
 serde_json = "1.0.108"
-sqlx = { version = "0.8.2", features = [ "postgres", "uuid", "chrono", "json", "runtime-tokio-rustls", ] }
+sqlx = { version = "0.8.2", features = [ "postgres", "uuid", "time", "json", "runtime-tokio-rustls", ] }
 uuid = { version = "1.4.0", features = ["v4", "serde"] }
 
 [features]

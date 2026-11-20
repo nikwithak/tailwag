@@ -12,6 +12,17 @@ derive_magic! {
     }
 }
 
+impl Default for FoodTruck {
+    fn default() -> Self {
+        Self {
+            id: uuid::Uuid::default(),
+            name: String::default(),
+            description: None,
+            website_url: None,
+        }
+    }
+}
+
 #[allow(unused)]
 impl FoodTruck {
     pub fn new(name: impl Into<String>) -> Self {
