@@ -65,6 +65,7 @@ impl UpdateStatement {
                 },
                 ColumnValue::Timestamp(val) => builder.push(column).push(" = ").push_bind(*val),
                 ColumnValue::Uuid(val) => builder.push(column).push(" = ").push_bind(*val),
+                ColumnValue::Null => builder.push(column).push(" = NULL"),
                 ColumnValue::OneToOne {
                     child_table,
                     value: _,

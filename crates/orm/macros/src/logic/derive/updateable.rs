@@ -67,8 +67,12 @@ fn build_get_update_statement(input: &DeriveInput) -> TokenStream {
                         tailwag::orm::data_definition::table::Identifier::new(#column_name_as_string).expect("Invalid column identifier found - this should not happen. Panicking."),
                         #wrapped_type,
                     );
+                } else {
+                    update_map.insert(
+                        tailwag::orm::data_definition::table::Identifier::new(#column_name_as_string).expect("Invalid column identifier found - this should not happen. Panicking."),
+                        tailwag::orm::data_definition::table::ColumnValue::Null,
+                    );
                 }
-                // TODO: Re-null fields
             )
         } else {
             quote!(

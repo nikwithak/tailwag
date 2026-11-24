@@ -30,6 +30,7 @@ pub enum ColumnValue {
     Timestamp(time::PrimitiveDateTime), // TIMESTAMP
     Uuid(uuid::Uuid),                 // UUID
     Json(String),                     // JSONB
+    Null,                             // Explicit SQL NULL — used to re-null a nullable column on update.
     OneToMany {
         child_table: Identifier,
         values: Vec<Box<ObjectRepr>>,

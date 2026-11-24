@@ -125,6 +125,7 @@ impl InsertStatement {
                     },
                     ColumnValue::Timestamp(val) => builder.push_bind(*val),
                     ColumnValue::Uuid(val) => builder.push_bind(*val),
+                    ColumnValue::Null => builder.push("NULL"),
                     ColumnValue::OneToOne {
                         child_table: col_name,
                         value: _,
