@@ -92,6 +92,8 @@ fn get_content_type(filename: &str) -> &'static str {
             // Probably should at some point.
             "html" => "text/html",
             "css" => "text/css",
+            "js" | "mjs" => "text/javascript",
+            "svg" => "image/svg+xml",
             "json" => "application/json",
             "pdf" => "application/pdf",
             "jpg" | "jpeg" => "image/jpeg",
